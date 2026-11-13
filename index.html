@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="theme-color" content="#f7f3ec"/>
+<title>🍳 حاسبة الفطار</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+/* ================= حاسبة الفطار — Design system ================= */
+:root{
+  --bg:#f7f3ec;--surface:#ffffff;--surface-2:#faf7f2;--surface-3:#f2ede5;
+  --ink:#1f1a14;--ink-2:#4a4239;--muted:#857a6d;--line:#ebe4d9;--line-2:#ddd3c5;
+  --brand:#c2410c;--brand-hover:#9a3412;--brand-soft:#fff3e8;--brand-tint:#ffe4cc;--yolk:#f59e0b;--yolk-soft:#fef3c7;
+  --green:#15803d;--green-soft:#e9f7ee;--red:#b91c1c;--red-soft:#fdecec;--blue:#1d4ed8;--blue-soft:#eaf0fd;--purple:#6d28d9;--purple-soft:#f1ebfd;
+  --radius:12px;--radius-lg:18px;--radius-sm:9px;
+  --shadow:0 1px 2px rgba(60,40,20,.05),0 4px 14px rgba(60,40,20,.05);--shadow-lg:0 24px 60px rgba(40,25,10,.18);
+  --ring:0 0 0 3px rgba(194,65,12,.18);
+  /* أسماء قديمة مستخدمة في الـ inline styles */
+  --amber:var(--brand);--amber-dark:var(--brand-hover);--amber-light:var(--brand-tint);--amber-bg:var(--brand-soft);
+  --gray-50:var(--surface-2);--gray-100:var(--line);--gray-200:var(--line-2);--gray-400:var(--muted);--gray-600:var(--ink-2);--gray-800:var(--ink);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Cairo',system-ui,sans-serif;background:var(--bg);color:var(--ink);direction:rtl;min-height:100vh;font-size:14px;line-height:1.55;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font-family:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+input[type=number]{-moz-appearance:textfield}
+input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none}
+::selection{background:var(--brand-tint)}
+.spin{animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- Login / screens ---------- */
+.screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px 16px;background:radial-gradient(1200px 600px at 100% -10%,#ffe7cf 0%,transparent 60%),radial-gradient(900px 500px at -10% 110%,#fdf0c4 0%,transparent 55%),var(--bg)}
+.login-card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:36px 28px 28px;width:100%;max-width:440px;box-shadow:var(--shadow-lg);text-align:center}
+.app-brand .logo{display:grid;place-items:center;width:72px;height:72px;margin:0 auto 14px;font-size:38px;border-radius:22px;background:linear-gradient(145deg,#fff1dc,#ffd9b0);box-shadow:inset 0 -3px 0 rgba(194,65,12,.12)}
+.app-brand h1{font-size:1.7rem;font-weight:900;letter-spacing:-.3px;color:var(--ink);line-height:1.2}
+.app-brand p{font-size:13px;color:var(--muted);margin:4px 0 26px}
+.section-label{display:block;font-size:12px;font-weight:800;color:var(--ink-2);text-align:right;margin-bottom:10px}
+.name-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px}
+.name-btn{min-height:44px;padding:8px 6px;background:var(--surface-2);border:1.5px solid var(--line);border-radius:var(--radius);font-size:13px;font-weight:700;color:var(--ink-2);transition:all .15s;line-height:1.3}
+.name-btn:hover{border-color:var(--brand-tint);background:var(--brand-soft);color:var(--brand-hover)}
+.name-btn.selected{border-color:var(--brand);background:var(--brand-soft);color:var(--brand-hover);box-shadow:var(--ring)}
+.divider{display:flex;align-items:center;gap:10px;margin:16px 0 12px;font-size:12px;color:var(--muted)}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--line)}
+.field{width:100%;min-height:46px;padding:11px 14px;border:1.5px solid var(--line-2);border-radius:var(--radius);background:var(--surface-2);font-size:14px;text-align:right;outline:none;margin-bottom:12px;transition:border .15s,box-shadow .15s,background .15s}
+.field:focus{border-color:var(--brand);box-shadow:var(--ring);background:#fff}
+.btn-login{width:100%;min-height:48px;padding:12px;background:var(--brand);color:#fff;border:none;border-radius:var(--radius);font-weight:800;font-size:15px;box-shadow:0 6px 18px rgba(194,65,12,.28);transition:all .15s}
+.btn-login:hover{background:var(--brand-hover)}
+.btn-login:active{transform:scale(.98)}
+.btn-login:disabled{background:var(--surface-3);color:var(--muted);cursor:not-allowed;box-shadow:none}
+.admin-link{display:inline-block;margin-top:16px;font-size:12px;color:var(--muted);cursor:pointer;padding:6px 10px;border-radius:8px}
+.admin-link:hover{color:var(--brand-hover);background:var(--brand-soft)}
+.design-credit{margin-top:14px;font-size:11px;color:var(--muted)}
+.design-credit span{color:var(--brand-hover);font-weight:800}
+.pending-box{background:var(--yolk-soft);border:1.5px solid #f5d27a;border-radius:16px;padding:20px;margin:10px 0}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:14px;color:var(--brand-hover);font-size:15px;font-weight:800;background:var(--bg)}
+.loading svg{stroke:var(--brand)}
+
+/* ---------- Header / tabs ---------- */
+.app-header{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding:0 28px;background:rgba(255,255,255,.88);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--line)}
+.header-brand{display:flex;align-items:center;gap:10px;padding:10px 0}
+.header-logo{display:grid;place-items:center;width:40px;height:40px;border-radius:13px;font-size:22px;background:linear-gradient(145deg,#fff1dc,#ffd9b0)}
+.header-title{font-size:1.05rem;font-weight:900;color:var(--ink);line-height:1.2}
+.header-sub{font-size:11px;color:var(--muted);font-weight:600}
+.header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.chip-ok{background:var(--green-soft);color:var(--green)}
+.chip-loading{background:var(--yolk-soft);color:#92400e}
+.chip-err{background:var(--red-soft);color:var(--red)}
+.chip-admin{background:var(--purple-soft);color:var(--purple)}
+.online-stack{display:flex;align-items:center;gap:0;padding:3px 10px 3px 4px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
+.online-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px #dcfce7;margin:0 6px 0 4px}
+.online-av{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:800;background:var(--brand-tint);color:var(--brand-hover);border:2px solid #fff;margin-inline-start:-6px}
+.online-av:first-of-type{margin-inline-start:0}
+.online-av.more{background:var(--surface-3);color:var(--ink-2)}
+.online-count{font-size:11px;font-weight:700;color:var(--ink-2);margin-inline-start:6px}
+.user-btn{display:flex;align-items:center;gap:7px;min-height:38px;background:var(--surface);border:1px solid var(--line-2);border-radius:999px;padding:3px 4px 3px 12px;font-size:12px;font-weight:800;color:var(--ink);cursor:pointer;transition:all .15s}
+.user-btn:hover{border-color:var(--brand);background:var(--brand-soft)}
+.user-btn>span:last-child{font-size:10px;color:var(--brand);font-weight:700}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--brand);display:grid;place-items:center;font-size:11px;font-weight:900;color:#fff}
+.tabs-wrap{display:flex;align-items:center;gap:4px;padding:0 28px;overflow-x:auto;scrollbar-width:none;background:var(--surface);border-bottom:1px solid var(--line)}
+.tabs-wrap::-webkit-scrollbar{display:none}
+.tab{display:flex;align-items:center;gap:6px;padding:13px 14px;font-size:13px;font-weight:800;color:var(--muted);border:none;background:none;border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .15s,border-color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--ink);border-bottom-color:var(--brand)}
+.tab-badge{background:var(--brand);color:#fff;font-size:10px;font-weight:800;min-width:20px;padding:1px 6px;border-radius:999px;text-align:center}
+.tab-add{padding:7px 12px;margin-inline-start:6px;font-size:12px;font-weight:800;color:var(--brand);border:1.5px dashed var(--brand-tint);background:var(--brand-soft);border-radius:999px;white-space:nowrap}
+.tab-add:hover{border-color:var(--brand)}
+.body{padding:24px 28px 40px;max-width:1320px;margin:0 auto}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:36px;padding:7px 14px;border-radius:var(--radius-sm);border:1px solid transparent;font-weight:800;font-size:12.5px;white-space:nowrap;background:var(--surface-3);color:var(--ink);transition:background .15s,transform .1s,box-shadow .15s}
+.btn:active{transform:scale(.97)}
+.btn:hover{filter:brightness(.97)}
+.btn-primary{background:var(--ink);color:#fff}.btn-primary:hover{background:#000;filter:none}
+.btn-amber{background:var(--brand);color:#fff}.btn-amber:hover{background:var(--brand-hover);filter:none}
+.btn-amber.active{background:var(--brand-hover);box-shadow:inset 0 0 0 2px rgba(255,255,255,.4)}
+.btn-green{background:var(--green);color:#fff}
+.btn-purple{background:var(--purple);color:#fff}
+.btn-ghost{background:var(--surface);border-color:var(--line-2);color:var(--ink-2)}.btn-ghost:hover{border-color:var(--brand);color:var(--brand-hover);background:var(--brand-soft);filter:none}
+.btn-red{display:block;width:100%;min-height:40px;margin-top:10px;padding:9px;border-radius:var(--radius-sm);background:var(--red-soft);border:1px solid #f6caca;color:var(--red);font-weight:800;font-size:12.5px;text-align:center}
+.btn-red:hover{background:#fbdcdc}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;gap:3px;min-width:30px;min-height:30px;background:none;border:none;padding:4px 6px;border-radius:8px;color:var(--ink-2);font-size:13px;transition:background .12s}
+.icon-btn:hover{background:var(--surface-3)}
+
+/* ---------- Cards ---------- */
+.box,.scard,.dash-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
+.box-title,.scard-title,.dash-card-title{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;font-weight:900;color:var(--ink);margin-bottom:12px}
+.scard-title,.dash-card-title{padding-bottom:10px;border-bottom:1px solid var(--line)}
+.box-count{font-size:11px;font-weight:700;color:var(--muted);background:var(--surface-3);padding:2px 9px;border-radius:999px}
+.empty-msg{color:var(--muted);font-size:12.5px;text-align:center;padding:16px}
+.empty-state{text-align:center;padding:70px 20px;color:var(--muted)}.empty-ico{font-size:44px;margin-bottom:8px}
+
+/* ---------- User view ---------- */
+.user-view{max-width:640px;margin:0 auto}
+.rest-hero{display:flex;align-items:center;gap:14px;padding:18px;margin-bottom:14px;background:linear-gradient(135deg,#fff 0%,#fff6ec 100%);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow)}
+.rest-hero .emoji{display:grid;place-items:center;flex-shrink:0;width:56px;height:56px;font-size:30px;border-radius:16px;background:var(--brand-tint)}
+.rest-hero-txt{flex:1;min-width:0}
+.rest-hero h2{font-size:1.25rem;font-weight:900;color:var(--ink);line-height:1.25}
+.rest-hero p{font-size:12.5px;color:var(--muted);margin-top:2px}
+.search-box{position:relative;margin-bottom:10px}
+.search-input{width:100%;min-height:46px;padding:10px 42px 10px 14px;border:1.5px solid var(--line);border-radius:var(--radius);font-size:14px;outline:none;background:var(--surface-2);transition:all .15s}
+.search-input:focus{border-color:var(--brand);background:#fff;box-shadow:var(--ring)}
+.search-icon{position:absolute;top:50%;right:14px;transform:translateY(-50%);color:var(--muted);pointer-events:none;display:flex}
+.cat-chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0 12px;margin:0 -2px}
+.cat-chips::-webkit-scrollbar{display:none}
+.cat-chip{flex-shrink:0;min-height:34px;padding:5px 14px;border-radius:999px;border:1.5px solid var(--line-2);background:var(--surface);font-size:12.5px;font-weight:800;color:var(--ink-2);transition:all .15s}
+.cat-chip:hover{border-color:var(--brand)}
+.cat-chip.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.menu-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;margin-bottom:6px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);transition:border-color .15s,background .15s}
+.menu-row:hover{border-color:var(--brand-tint);background:#fffcf8}
+.menu-row.in-cart{border-color:#f3c9a6;background:var(--brand-soft)}
+.menu-info{flex:1;min-width:0}
+.mname{display:flex;align-items:center;gap:6px;font-weight:800;font-size:14px;color:var(--ink)}
+.qty-pill{font-size:11px;font-weight:900;color:#fff;background:var(--brand);padding:0 7px;border-radius:999px}
+.mprice{font-size:12px;color:var(--muted);margin-top:1px}
+.mprice b{color:var(--ink-2);font-weight:800}
+.stars-row{display:flex;align-items:center;gap:0;margin-top:3px}
+.star{background:none;border:none;padding:1px 2px;font-size:16px;line-height:1;color:#ddd3c5;transition:color .1s,transform .1s}
+.star:hover{transform:scale(1.15)}
+.star.lit{color:var(--yolk)}
+.star-avg{font-size:11px;color:var(--muted);font-weight:700;margin-inline-start:6px}
+.order-btns{display:flex;gap:6px;flex-shrink:0}
+.btn-b,.btn-s{min-height:38px;min-width:64px;padding:6px 12px;border-radius:var(--radius-sm);font-size:12.5px;font-weight:800;border:none;transition:background .15s,transform .1s}
+.btn-b{background:var(--brand-tint);color:var(--brand-hover)}.btn-b:hover{background:#ffd5ad}
+.btn-s{background:var(--brand);color:#fff}.btn-s:hover{background:var(--brand-hover)}
+.btn-b:active,.btn-s:active,.btn-add:active{transform:scale(.94)}
+.btn-add{background:none;border:1.5px solid var(--line-2);color:var(--brand);display:flex;align-items:center;justify-content:center;min-width:36px;min-height:36px;border-radius:var(--radius-sm)}
+.btn-add:hover{background:var(--brand-soft);border-color:var(--brand)}
+.cart-box{border-color:#f3c9a6}
+.my-order-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line-2)}
+.my-order-row:last-of-type{border-bottom:none}
+.mo-info{flex:1;min-width:0}
+.mo-name{font-weight:800;font-size:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.mo-type{font-size:10.5px;font-weight:800;color:var(--brand-hover);background:var(--brand-tint);padding:0 7px;border-radius:999px}
+.mo-sub{font-size:11.5px;color:var(--muted)}
+.mo-price{font-weight:900;font-size:14px;min-width:70px;text-align:left}
+.qty-ctrl{display:flex;align-items:center;border:1.5px solid var(--line-2);border-radius:999px;overflow:hidden;flex-shrink:0}
+.qty-ctrl button{width:32px;height:32px;border:none;background:var(--surface);font-size:17px;font-weight:800;color:var(--brand)}
+.qty-ctrl button:hover{background:var(--brand-soft)}
+.qty-ctrl span{min-width:24px;text-align:center;font-weight:900;font-size:13px}
+.cart-total{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:12px;border-top:2px solid var(--line);font-weight:800}
+.cart-total small{font-size:11px;color:var(--muted);font-weight:600}
+.cart-total b{font-size:1.25rem;font-weight:900;color:var(--brand-hover)}
+.order-note-text{display:inline-block;font-size:11.5px;color:#8a4b12;background:var(--yolk-soft);border-radius:6px;padding:1px 7px;margin-top:3px}
+.cart-bar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:150;display:none;align-items:center;gap:10px;min-height:50px;padding:8px 10px 8px 20px;background:var(--ink);color:#fff;border:none;border-radius:999px;box-shadow:0 12px 30px rgba(0,0,0,.25);font-size:14px;font-weight:800;white-space:nowrap}
+.cart-bar b{font-size:15px;font-weight:900;color:#ffd5ad}
+.cart-bar-count{display:grid;place-items:center;min-width:30px;height:30px;border-radius:50%;background:var(--brand);font-size:13px}
+.my-bill{background:var(--ink);color:#fff;border-radius:var(--radius-lg);padding:20px;text-align:center;margin-bottom:14px}
+.my-bill .amt{font-size:2.2rem;font-weight:900}
+.saved-balance{display:flex;justify-content:space-between;align-items:center;background:var(--purple-soft);border:1px solid #ddd0fb;border-radius:10px;padding:8px 12px;margin-top:8px;font-size:12px}
+.personal-reminder{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px;box-shadow:var(--shadow);border-inline-start:4px solid var(--blue)}
+.personal-reminder.old{border-inline-start-color:var(--yolk);background:#fffbf0}
+.personal-reminder-label{font-size:13px;font-weight:800;color:var(--ink)}
+.personal-reminder-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.personal-reminder-amount{font-size:16px;font-weight:900;color:var(--red);white-space:nowrap}
+.personal-reminder-amount.clear{color:var(--green);font-size:13px}
+.payment-card{display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:16px;margin-bottom:14px;box-shadow:var(--shadow);text-align:right}
+.payment-card h3{font-size:14px;font-weight:900;color:var(--ink);margin-bottom:2px}
+.payment-card p{font-size:12px;color:var(--muted)}
+.payment-qr{width:116px;height:116px;flex-shrink:0;border-radius:10px;border:1px solid var(--line);padding:4px;background:#fff;order:-1}
+
+/* ---------- Admin ---------- */
+.admin-layout{display:flex;flex-direction:column;gap:20px}
+.admin-side{width:100%}
+@media(min-width:1024px){.admin-layout{flex-direction:row;align-items:flex-start}.admin-side{width:390px;flex-shrink:0;position:sticky;top:120px;max-height:calc(100vh - 130px);overflow-y:auto;padding-inline-end:2px;scrollbar-width:thin}}
+.admin-main{flex:1;min-width:0}
+.admin-main>div:first-child>span{font-size:1.05rem!important;font-weight:900!important}
+.rest-bar{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:12px 16px;margin-bottom:18px;box-shadow:var(--shadow)}
+.rest-emoji{display:grid;place-items:center;width:44px;height:44px;border-radius:13px;background:var(--brand-tint);font-size:24px;flex-shrink:0}
+.rest-name-input{flex:1;min-width:0;font-size:1.1rem;font-weight:900;color:var(--ink);background:transparent;border:1.5px solid transparent;border-radius:8px;padding:4px 8px;outline:none}
+.rest-name-input:hover{border-color:var(--line)}.rest-name-input:focus{border-color:var(--brand);background:var(--surface-2)}
+.btn-del-rest{background:var(--surface);color:var(--red);border:1px solid #f3cccc;border-radius:var(--radius-sm);padding:7px 12px;font-size:12px;font-weight:800;min-height:36px}
+.btn-del-rest:hover{background:var(--red-soft)}
+.grid-people{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:620px){.grid-people{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1400px){.grid-people{grid-template-columns:repeat(3,1fr)}}
+.pcard{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius-lg);padding:14px;cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s,box-shadow .15s}
+.pcard:hover{border-color:#f0c4a0}
+.pcard.active{border-color:var(--brand);box-shadow:var(--ring),var(--shadow)}
+.pcard.mine{background:linear-gradient(#fff,#fff) padding-box}
+.pname-input{width:100%;font-size:14px;font-weight:900;color:var(--ink);background:transparent;border:1.5px solid transparent;border-radius:7px;padding:2px 6px;outline:none}
+.pname-input:hover{border-color:var(--line)}.pname-input:focus{border-color:var(--brand);background:var(--surface-2)}
+.orders-wrap{min-height:44px;max-height:150px;overflow-y:auto;margin:6px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.orow{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px;padding:6px 9px;background:var(--surface-2);border-radius:8px;margin-bottom:4px;font-size:12px}
+.fin-line{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;margin-bottom:6px}
+.fin-lbl{color:var(--muted);font-weight:700;line-height:1.3}
+.fin-lbl small{font-size:10px}
+.paid-field,.balance-field,.deliv-input{min-height:32px;padding:4px 8px;border:1.5px solid var(--line-2);border-radius:8px;text-align:center;font-size:12.5px;font-weight:700;outline:none;background:var(--surface-2)}
+.paid-field{width:84px}.balance-field{width:96px;border-color:#d8c8f7;background:#faf7ff}.deliv-input{width:64px}
+select.paid-field{text-align:right;padding-inline:6px}
+.paid-field:focus,.deliv-input:focus{border-color:var(--brand);box-shadow:var(--ring);background:#fff}
+.balance-field:focus{border-color:var(--purple);box-shadow:0 0 0 3px #ede4fd}
+.fin-diff{display:flex;justify-content:space-between;align-items:center;font-weight:900;font-size:14px;margin-top:6px;padding-top:8px;border-top:1px dashed var(--line-2)}
+.target-hint{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:12px;color:var(--muted);background:var(--surface-2);border:1px dashed var(--line-2);border-radius:var(--radius-sm);padding:7px 10px;margin-bottom:8px}
+.target-hint.on{color:var(--brand-hover);background:var(--brand-soft);border:1px solid #f3c9a6}
+.admin-menu-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 11px;background:var(--surface);border:1px solid var(--line);border-radius:10px;margin-bottom:5px}
+.admin-menu-row:hover{border-color:var(--brand-tint);background:#fffcf8}
+.admin-menu-row .btn-b,.admin-menu-row .btn-s{min-width:52px;min-height:32px;padding:4px 9px;font-size:12px}
+.summary-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;background:var(--surface-2);border-radius:10px;margin-bottom:4px}
+.summary-qty{background:var(--brand);color:#fff;font-weight:900;font-size:12px;min-width:26px;text-align:center;padding:2px 8px;border-radius:999px}
+.log-row{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid var(--line)}
+.log-row:last-child{border-bottom:none}
+.log-av{width:26px;height:26px;border-radius:50%;background:var(--brand-tint);display:grid;place-items:center;font-size:10px;font-weight:900;color:var(--brand-hover);flex-shrink:0}
+.log-txt{font-size:12px;color:var(--ink-2);line-height:1.5}
+.log-txt strong{color:var(--ink)}
+.log-time{font-size:10.5px;color:var(--muted)}
+.calc-row{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12.5px;margin-bottom:8px}
+.calc-lbl{color:var(--muted);font-weight:700}
+.calc-total{display:flex;justify-content:space-between;font-size:13.5px;font-weight:800;margin-bottom:6px}
+.calc-grand{display:flex;justify-content:space-between;font-size:17px;font-weight:900;padding-top:10px;border-top:2px solid var(--line);margin-top:6px}
+.pending-item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 13px;background:var(--brand-soft);border:1px solid #f3c9a6;border-radius:var(--radius);margin-bottom:7px}
+.pending-name{font-weight:800;font-size:14px;color:var(--brand-hover)}
+.approve-btn,.reject-btn{border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:800;min-height:34px}
+.approve-btn{background:var(--green);color:#fff}
+.reject-btn{background:var(--red-soft);color:var(--red)}
+.notif-dot{width:8px;height:8px;background:var(--red);border-radius:50%;display:inline-block;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.rating-item{display:flex;justify-content:space-between;align-items:center;padding:11px 13px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:6px}
+#receipt-btns{gap:6px}
+#receipt-btns .btn{min-height:34px;padding:6px 11px;font-size:12px}
+
+/* ---------- Modals ---------- */
+.overlay{position:fixed;inset:0;z-index:999;display:flex;justify-content:center;align-items:flex-start;padding:24px 16px;overflow-y:auto;background:rgba(31,26,20,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.modal{width:100%;max-width:600px;margin:auto;background:var(--surface);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-lg);animation:modalIn .2s ease-out}
+@keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+.mhead{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
+.mhead h3{font-size:1.05rem;font-weight:900}
+.mbody{padding:18px 20px;max-height:65vh;overflow-y:auto}
+.mfoot{display:flex;gap:8px;justify-content:flex-end;padding:12px 20px;background:var(--surface-2);border-top:1px solid var(--line)}
+.edit-row{display:flex;align-items:center;gap:6px;padding:6px;background:var(--surface-2);border-radius:10px;margin-bottom:6px}
+.edit-field,.edit-field-sm{min-height:38px;padding:7px 10px;border:1.5px solid var(--line-2);border-radius:9px;font-size:13px;outline:none;background:#fff}
+.edit-field{flex:1;min-width:0}.edit-field-sm{width:76px;text-align:center}
+.edit-field:focus,.edit-field-sm:focus{border-color:var(--brand);box-shadow:var(--ring)}
+.emoji-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:12px}
+.emoji-opt{font-size:24px;padding:8px;border-radius:12px;border:1.5px solid var(--line);cursor:pointer;text-align:center;transition:all .12s}
+.emoji-opt:hover{border-color:var(--brand-tint)}
+.emoji-opt.sel{border-color:var(--brand);background:var(--brand-soft);box-shadow:var(--ring)}
+
+/* ---------- Receipt ---------- */
+.receipt{direction:rtl;padding:4px}
+.r-head{text-align:center;padding-bottom:14px;border-bottom:2px dashed var(--line-2);margin-bottom:16px}
+.r-head .emoji{font-size:34px;display:block;margin-bottom:4px}
+.r-head h2{font-size:1.2rem;font-weight:900;color:var(--ink)}
+.r-head p{font-size:12px;color:var(--muted);margin-top:2px}
+.r-row{display:flex;justify-content:space-between;gap:10px;padding:7px 0;font-size:13.5px;border-bottom:1px solid var(--line)}
+.r-row.total{font-weight:900;font-size:14.5px;border-top:2px dashed var(--line-2);border-bottom:none;margin-top:8px;padding-top:10px}
+.r-row.grand{font-weight:900;font-size:17px;color:var(--brand-hover);border-top:2px solid var(--brand-tint);border-bottom:none;margin-top:4px;padding-top:10px}
+.r-person{margin-bottom:12px;padding:12px 14px;background:var(--surface-2);border-radius:var(--radius);border-inline-start:3px solid var(--brand)}
+.r-person-name{font-weight:900;font-size:14px;display:flex;justify-content:space-between;margin-bottom:8px}
+.r-item{display:flex;justify-content:space-between;font-size:12.5px;padding:3px 0;color:var(--ink-2)}
+.r-section{font-size:12px;font-weight:900;color:var(--muted);margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+
+/* ---------- Ledger (دفتر الحسابات) ---------- */
+.history-sheet-head{display:flex;justify-content:space-between;align-items:center}
+.history-sheet-head span{display:block;font-size:11px;color:var(--muted)}
+.ledger-shell{max-width:1400px;margin:0 auto}
+.ledger-toolbar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:18px 20px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg) var(--radius-lg) 0 0}
+.ledger-title{display:flex;align-items:center;gap:12px}
+.ledger-title-mark{width:44px;height:44px;border-radius:13px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:19px}
+.ledger-title h2{font-size:18px;font-weight:900;color:var(--ink)}
+.ledger-title p{font-size:12px;color:var(--muted)}
+.ledger-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ledger-search{width:220px;min-height:38px;padding:8px 12px;border:1.5px solid var(--line);border-radius:var(--radius-sm);background:var(--surface-2);font-size:13px;outline:0}
+.ledger-search:focus{border-color:var(--brand);background:#fff;box-shadow:var(--ring)}
+.ledger-range{display:flex;gap:3px;background:var(--surface-3);border-radius:10px;padding:3px}
+.ledger-range button{border:0;background:transparent;border-radius:8px;padding:6px 11px;color:var(--ink-2);font-size:12px;font-weight:700}
+.ledger-range button.active{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.ledger-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-top:0}
+.ledger-kpi{background:var(--surface);padding:14px 18px}
+.ledger-kpi label{display:block;color:var(--muted);font-size:12px;margin-bottom:2px}
+.ledger-kpi strong{font-size:20px;font-weight:900;color:var(--ink)}
+.ledger-kpi.danger strong{color:var(--red)}
+.ledger-table-wrap{overflow:auto;background:var(--surface);border:1px solid var(--line);border-top:0;border-radius:0 0 var(--radius-lg) var(--radius-lg)}
+.dash-card .ledger-table-wrap{border-top:1px solid var(--line);border-radius:var(--radius)}
+.ledger-table{width:100%;min-width:850px;border-collapse:separate;border-spacing:0;font-size:13px}
+.ledger-table thead th{position:sticky;top:0;z-index:2;background:var(--surface-2);color:var(--muted);text-align:right;font-weight:800;font-size:12px;padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+.ledger-table td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle;white-space:nowrap}
+.ledger-person-row{transition:background .12s}.ledger-person-row:hover{background:#fffbf5}
+.ledger-person-name{display:flex;align-items:center;gap:9px;font-weight:800;color:var(--ink)}
+.ledger-avatar{width:30px;height:30px;border-radius:9px;background:var(--brand-tint);color:var(--brand-hover);display:grid;place-items:center;font-size:12px;font-weight:900}
+.ledger-money{font-weight:800;color:var(--ink-2)}
+.ledger-due{font-weight:900;color:var(--red)}
+.ledger-paid{font-weight:800;color:var(--green)}
+.ledger-status{display:inline-flex;padding:3px 10px;border-radius:999px;font-size:11.5px;font-weight:800}
+.ledger-status.open{background:var(--red-soft);color:var(--red)}
+.ledger-status.closed{background:var(--green-soft);color:var(--green)}
+.ledger-detail-row td{padding:0;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.ledger-detail{padding:14px 18px 16px}
+.ledger-detail-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--ink-2);font-size:12.5px;font-weight:800}
+.ledger-subtable{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.ledger-subtable th{background:var(--surface-3);color:var(--muted);font-size:11.5px;text-align:right;padding:8px 10px}
+.ledger-subtable td{font-size:12px;padding:9px 10px;border-top:1px solid var(--line);white-space:normal}
+.ledger-subtable .items-cell{min-width:260px;line-height:1.8}
+.ledger-note{display:inline-block;color:#8a4b12;background:var(--yolk-soft);border-radius:4px;padding:0 5px;margin:1px}
+.ledger-row-btn{min-height:30px;border:1px solid var(--line-2);background:#fff;color:var(--ink-2);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700}
+.ledger-row-btn:hover{background:var(--brand-soft);border-color:var(--brand)}
+.ledger-empty{padding:55px!important;text-align:center;color:var(--muted)}
+.ledger-voided{opacity:.65}
+.ledger-sheet-paid-input{width:76px;min-height:30px;padding:3px 6px;border:1.5px solid #bfe6cc;border-radius:7px;background:var(--green-soft);color:var(--green);font-weight:800;font-size:12px;text-align:center;outline:0}
+.ledger-sheet-paid-input:focus{border-color:var(--green);box-shadow:0 0 0 3px #d5f0de}
+
+.ledger-del-btn{min-height:28px;border:1px solid #f3cccc;background:#fff;color:var(--red);border-radius:8px;padding:3px 9px;font-size:11.5px;font-weight:700;white-space:nowrap}.ledger-del-btn:hover{background:var(--red-soft);border-color:var(--red)}.ledger-detail-actions{display:flex;align-items:center;gap:10px}
+/* ---------- Toasts / feedback ---------- */
+.toast{position:fixed;top:16px;left:50%;transform:translate(-50%,-20px);z-index:1300;max-width:calc(100vw - 32px);padding:11px 18px;background:var(--ink);color:#fff;border-radius:12px;font-size:13.5px;font-weight:700;box-shadow:0 12px 30px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.err{background:var(--red)}
+.undo-toast{position:fixed;bottom:80px;right:16px;left:16px;z-index:1200;display:none;align-items:center;justify-content:space-between;gap:12px;max-width:440px;margin:auto;padding:10px 12px 10px 16px;background:var(--ink);color:#fff;border-radius:14px;box-shadow:0 12px 30px rgba(0,0,0,.25);font-size:13px;font-weight:700}
+.undo-toast button{background:var(--brand);color:#fff;border:0;border-radius:9px;padding:7px 14px;font-weight:900;min-height:34px}
+.order-pop{animation:orderPop .28s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes orderPop{50%{transform:scale(1.1)}}
+.order-float{position:fixed;pointer-events:none;z-index:1201;color:var(--brand);font-weight:900;font-size:15px;animation:orderFloat .75s ease-out forwards}
+@keyframes orderFloat{0%{opacity:0;transform:translateY(5px) scale(.8)}25%{opacity:1}100%{opacity:0;transform:translateY(-26px) scale(1.05)}}
+
+.toast.ok{background:var(--green)}
+.toast.chat{background:#2b2420;border:1px solid #4a3c33}
+
+/* ---------- Menu editor ---------- */
+.edit-search{padding:12px 20px 4px;border-bottom:1px solid var(--line);background:var(--surface)}
+.edit-meta{font-size:12px;color:var(--muted);padding:8px 2px}
+.edit-dirty{color:var(--brand-hover);font-weight:800}
+.edit-head{display:grid;grid-template-columns:1fr 76px 76px 30px;gap:6px;padding:0 6px 6px;font-size:11px;font-weight:800;color:var(--muted)}
+.edit-head span:nth-child(2),.edit-head span:nth-child(3){text-align:center}
+.edit-row{display:grid;grid-template-columns:1fr 76px 76px 30px}
+.edit-row.dirty{background:var(--yolk-soft);box-shadow:inset 3px 0 0 var(--yolk)}
+.edit-row.new{background:var(--green-soft);box-shadow:inset 3px 0 0 var(--green)}
+
+/* ---------- Cart / confirm ---------- */
+.draft-flag,.sent-flag{font-size:10.5px;font-weight:800;padding:1px 8px;border-radius:999px;margin-inline-start:4px;vertical-align:middle}
+.draft-flag{background:var(--yolk-soft);color:#92400e}
+.sent-flag{background:var(--blue-soft);color:var(--blue)}
+.note-btn{font-size:11.5px;color:var(--muted);padding:2px 4px;min-height:24px}
+.btn-confirm{display:block;width:100%;min-height:50px;margin-top:14px;border:none;border-radius:var(--radius);background:var(--green);color:#fff;font-size:15px;font-weight:900;box-shadow:0 6px 18px rgba(21,128,61,.25);transition:background .15s,transform .1s}
+.btn-confirm:hover{background:#166534}.btn-confirm:active{transform:scale(.98)}
+.confirm-hint{text-align:center;font-size:11.5px;color:var(--muted);margin-top:6px}
+.confirmed-box{border-color:#bfe6cc;background:linear-gradient(#fff,#f6fcf8)}
+.conf-row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line-2);font-size:13.5px;font-weight:700}
+.conf-row:last-of-type{border-bottom:none}
+.conf-q{color:var(--green);font-weight:900}
+.btn-sm{min-height:30px;padding:4px 10px;font-size:12px}
+.cart-bar.pending{background:var(--green)}.cart-bar.pending .cart-bar-count{background:#fff;color:var(--green)}.cart-bar.pending b{color:#dcfce7}
+.draft-badge{font-size:11px;font-weight:800;color:#92400e;background:var(--yolk-soft);border-radius:7px;padding:3px 8px;margin:4px 0;display:inline-block}
+
+/* ---------- Group chat ---------- */
+.chat-fab{position:fixed;left:20px;bottom:20px;z-index:160;width:56px;height:56px;border-radius:50%;border:none;background:var(--brand);color:#fff;display:grid;place-items:center;box-shadow:0 10px 26px rgba(194,65,12,.35);transition:transform .15s,background .15s}
+.chat-fab:hover{background:var(--brand-hover);transform:translateY(-2px)}
+.chat-fab.ring{animation:fabRing .6s ease}
+@keyframes fabRing{20%{transform:rotate(-14deg)}40%{transform:rotate(12deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(5deg)}}
+.chat-badge{position:absolute;top:-3px;right:-3px;min-width:22px;height:22px;padding:0 5px;border-radius:999px;background:var(--red);color:#fff;font-size:11px;font-weight:900;place-items:center;border:2px solid #fff}
+body.chat-open .chat-fab{opacity:0;pointer-events:none}
+.chat-panel{position:fixed;left:20px;bottom:20px;z-index:170;width:380px;height:min(600px,calc(100vh - 110px));display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-lg);overflow:hidden;opacity:0;transform:translateY(16px) scale(.98);pointer-events:none;transition:opacity .18s,transform .18s}
+.chat-panel.open{opacity:1;transform:none;pointer-events:auto}
+.chat-head{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,#fff,#fff4ea)}
+.chat-head-title b{display:block;font-size:15px;font-weight:900}
+.chat-head-title small{font-size:11px;color:var(--muted)}
+.chat-head-actions{display:flex;gap:4px;align-items:center}
+.chat-hbtn{display:inline-flex;align-items:center;min-height:32px;padding:4px 9px;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:12px;font-weight:700;color:var(--ink-2)}
+.chat-hbtn:hover{background:var(--brand-soft);border-color:var(--brand-tint)}
+#chat-notif-btn{color:var(--brand-hover);border-color:#f3c9a6;background:var(--brand-soft)}
+.chat-list{flex:1;overflow-y:auto;padding:12px 12px 6px;background:var(--surface-2);overscroll-behavior:contain}
+.chat-day{text-align:center;margin:10px 0 8px;font-size:11px;font-weight:800;color:var(--muted)}
+.chat-sys{margin:8px auto;max-width:90%;width:fit-content;text-align:center;font-size:12px;font-weight:700;color:var(--ink-2);background:#fff;border:1px solid var(--line);border-radius:12px;padding:5px 12px;line-height:1.5}
+.chat-sys span{display:block;font-size:10px;color:var(--muted);font-weight:600}
+.chat-sys.alert{background:var(--yolk-soft);border-color:#f5d27a;color:#78350f;font-size:13px}
+.chat-msg{display:flex;align-items:flex-end;gap:6px;margin-top:8px}
+.chat-msg.cont{margin-top:2px}
+.chat-msg.mine{flex-direction:row-reverse}
+.chat-msg.mine .chat-av{display:none}
+.chat-av{width:28px;height:28px;flex-shrink:0;border-radius:50%;background:var(--brand-tint);color:var(--brand-hover);display:grid;place-items:center;font-size:10.5px;font-weight:900}
+.chat-av.ghost{background:none}
+.chat-bubble{max-width:78%;padding:7px 11px 5px;border-radius:16px;background:#fff;border:1px solid var(--line);border-start-start-radius:5px}
+.chat-msg.mine .chat-bubble{background:var(--brand);border-color:var(--brand);color:#fff;border-start-start-radius:16px;border-start-end-radius:5px}
+.chat-msg.cont .chat-bubble{border-start-start-radius:16px}
+.chat-msg.mine.cont .chat-bubble{border-start-end-radius:16px}
+.chat-name{font-size:11.5px;font-weight:900;color:var(--brand-hover);margin-bottom:1px}
+.chat-text{font-size:14px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+.chat-time{font-size:10px;opacity:.6;text-align:left;margin-top:1px}
+.chat-empty{text-align:center;color:var(--muted);padding:60px 10px;font-size:13px}.chat-empty div{font-size:40px;margin-bottom:6px}
+.chat-quick{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:8px 12px 0;background:var(--surface)}
+.chat-quick::-webkit-scrollbar{display:none}
+.chat-quick button{flex-shrink:0;min-height:30px;padding:3px 11px;border-radius:999px;border:1px solid var(--line-2);background:var(--surface-2);font-size:12px;font-weight:700;color:var(--ink-2)}
+.chat-quick button:hover{border-color:var(--brand);color:var(--brand-hover)}
+.chat-compose{display:flex;align-items:flex-end;gap:8px;padding:10px 12px 12px;background:var(--surface)}
+.chat-compose textarea{flex:1;resize:none;min-height:44px;max-height:110px;padding:11px 14px;border:1.5px solid var(--line-2);border-radius:22px;background:var(--surface-2);font-size:14px;line-height:1.4;outline:none}
+.chat-compose textarea:focus{border-color:var(--brand);background:#fff;box-shadow:var(--ring)}
+.chat-send{width:44px;height:44px;flex-shrink:0;border:none;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center}
+.chat-send:hover{background:var(--brand-hover)}
+@media(max-width:699px){
+  .chat-fab{left:14px;bottom:14px;width:52px;height:52px}
+  .chat-panel{left:0;right:0;bottom:0;top:0;width:auto;height:auto;border-radius:0;border:none}
+  .chat-compose{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+  #chat-notif-btn{font-size:11px;padding:4px 7px}
+  .cart-bar{left:auto;right:14px;transform:none;bottom:14px}
+  .edit-head,.edit-row{grid-template-columns:1fr 62px 62px 28px}.edit-field-sm{width:auto}
+}
+
+/* ---------- Roll ---------- */
+.roll-q{background:var(--ink)!important;color:#fff!important;border-color:var(--ink)!important}
+.roll-card{margin:10px auto;max-width:94%;background:#fff;border:1.5px solid #f3c9a6;border-radius:16px;padding:12px;text-align:center;box-shadow:var(--shadow)}
+.roll-card.voided{opacity:.55;border-style:dashed}
+.roll-card.just-won{animation:wonPulse 1s ease 2}
+@keyframes wonPulse{50%{box-shadow:0 0 0 6px rgba(245,158,11,.35);transform:scale(1.02)}}
+.roll-head b{display:block;font-size:13.5px;font-weight:900}
+.roll-head span{font-size:11px;color:var(--muted)}
+.roll-cands{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin:10px 0}
+.roll-cands span{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line)}
+.roll-cands span i{font-style:normal;font-size:10px;color:var(--muted);background:#fff;border-radius:999px;padding:0 5px}
+.roll-cands span.win{background:var(--green);border-color:var(--green);color:#fff}
+.roll-cands span.win i{color:var(--green)}
+.roll-cands span.rested{opacity:.5;text-decoration:line-through}
+.roll-spin{font-size:26px;font-weight:900;color:var(--brand);padding:10px;background:var(--brand-soft);border-radius:12px;animation:spinBlink .12s linear infinite alternate}
+@keyframes spinBlink{to{opacity:.65}}
+.roll-winner{font-size:15px;padding:10px;background:var(--green-soft);color:#14532d;border-radius:12px}
+.roll-winner b{font-size:22px;font-weight:900}
+.roll-winner small{font-size:11px;color:var(--muted)}
+.roll-foot{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.6}
+.roll-reroll{margin-top:8px;min-height:30px;padding:4px 12px;border-radius:9px;border:1px solid var(--line-2);background:#fff;font-size:12px;font-weight:700;color:var(--ink-2)}
+.roll-reroll:hover{border-color:var(--brand);color:var(--brand-hover)}
+.roll-banner{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;padding:11px 14px;border-radius:var(--radius);background:var(--green-soft);border:1px solid #bfe6cc;color:#14532d;font-size:13.5px}
+.roll-banner.idle{background:var(--surface);border:1px dashed var(--line-2);color:var(--ink-2)}
+.roll-banner button{flex-shrink:0;min-height:32px;padding:4px 12px;border:none;border-radius:9px;background:var(--ink);color:#fff;font-size:12px;font-weight:800}
+/* ---------- Chat files ---------- */
+.chat-clip{width:44px;height:44px;flex-shrink:0;border:1.5px solid var(--line-2);border-radius:50%;background:var(--surface-2);color:var(--ink-2);display:grid;place-items:center}
+.chat-clip:hover{border-color:var(--brand);color:var(--brand)}
+.chat-attach{align-items:center;gap:10px;margin:8px 12px 0;padding:8px;border:1px solid #f3c9a6;background:var(--brand-soft);border-radius:12px}
+.chat-attach img{width:46px;height:46px;object-fit:cover;border-radius:8px}
+.att-ico{font-size:28px}.att-info{flex:1;min-width:0;display:flex;flex-direction:column}
+.att-info b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.att-info span{font-size:11px;color:var(--muted)}
+.att-status{font-size:12.5px;font-weight:700;color:var(--brand-hover)}
+.chat-img{display:block;width:230px;max-width:100%;padding:0;border:none;border-radius:11px;overflow:hidden;background:var(--surface-3);margin:2px 0 3px;cursor:zoom-in}
+.chat-img img{width:100%;height:100%;object-fit:cover;display:block}
+.chat-file{display:flex;align-items:center;gap:9px;min-width:200px;max-width:100%;padding:8px 10px;margin:2px 0 3px;border:1px solid var(--line);border-radius:11px;background:var(--surface-2);text-align:right;color:var(--ink)}
+.chat-msg.mine .chat-file{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3);color:#fff}
+.cf-ico{font-size:26px}.cf-info{flex:1;min-width:0;display:flex;flex-direction:column}
+.cf-info b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cf-info small{font-size:11px;opacity:.7}
+.cf-dl{font-size:16px;font-weight:900}
+.chat-panel.drop{outline:3px dashed var(--brand);outline-offset:-8px}
+.img-viewer{position:fixed;inset:0;z-index:1400;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:56px 12px 12px}
+.img-viewer img{max-width:100%;max-height:100%;border-radius:8px;object-fit:contain}
+.iv-bar{position:absolute;top:10px;left:10px;display:flex;gap:8px}
+.iv-bar button{min-height:38px;padding:6px 14px;border:none;border-radius:10px;background:rgba(255,255,255,.15);color:#fff;font-size:14px;font-weight:800}
+.iv-bar button:hover{background:rgba(255,255,255,.28)}
+.iv-status{position:absolute;color:#fff;font-weight:700}
+/* ---------- Responsive ---------- */
+@media(max-width:1023px){.cart-bar{display:flex}.user-view{padding-bottom:70px}}
+@media(max-width:800px){.ledger-kpis{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.ledger-toolbar{align-items:stretch;flex-direction:column;padding:14px}.ledger-actions{width:100%}.ledger-search{width:100%}}
+@media(max-width:600px){
+  body{font-size:13.5px}
+  .login-card{padding:28px 18px 22px;border-radius:20px}
+  .app-header{padding:0 12px;gap:4px}
+  .header-brand{padding:8px 0}.header-logo{width:34px;height:34px;font-size:19px;border-radius:11px}.header-sub{display:none}
+  .header-actions{width:100%;padding:0 0 8px;gap:6px}
+  .header-actions #receipt-btns{width:100%;overflow-x:auto;scrollbar-width:none;order:9}
+  .user-btn{margin-inline-start:auto}
+  .online-count{display:none}
+  .tabs-wrap{padding:0 8px}.tab{padding:11px 11px;font-size:12.5px}
+  .body{padding:14px 12px 30px}
+  .rest-hero{padding:14px;gap:12px}.rest-hero .emoji{width:48px;height:48px;font-size:26px}.rest-hero .btn{padding:6px 10px;font-size:12px}
+  .box,.scard,.dash-card{padding:14px;border-radius:16px}
+  .menu-row{padding:11px 12px;align-items:flex-start;flex-direction:column;gap:8px}
+  .order-btns{width:100%}.order-btns button{flex:1}
+  .my-order-row{flex-wrap:wrap}.mo-info{flex-basis:100%}.qty-ctrl{margin-inline-end:auto}
+  .payment-card{gap:12px}.payment-qr{width:96px;height:96px}
+  .rest-bar{padding:10px 12px}
+  .mfoot>div{flex-wrap:wrap}.mfoot .edit-field{min-width:120px}
+  .emoji-grid{grid-template-columns:repeat(5,1fr)}
+}
+@media print{.no-print,.cart-bar,.toast,.undo-toast{display:none!important}.overlay{position:static;background:none;padding:0}.modal{box-shadow:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+</style>
+</head>
+<body>
+
+<div id="login-screen" class="screen">
+  <div class="login-card">
+    <div class="app-brand"><span class="logo">🍳</span><h1>حاسبة الفطار</h1><p>تنظيم الطلبات والحسابات بسهولة</p></div>
+    <span class="section-label">اختار اسمك:</span>
+    <div class="name-grid" id="name-grid"></div>
+    <div class="divider">أو اكتب اسمك</div>
+    <input class="field" type="text" id="custom-name" placeholder="اسمك هنا..." autocomplete="off" oninput="onCustomInput()" onkeydown="if(event.key==='Enter'&&this.value.trim())doLogin()"/>
+    <button class="btn-login" id="login-btn" onclick="doLogin()" disabled>دخول ←</button>
+    <div class="admin-link" onclick="showAdminLogin()">🔐 دخول كـ Admin</div>
+    <div class="design-credit">Powered by Firebase · Design by <span>Amr</span></div>
+  </div>
+</div>
+
+<div id="pending-screen" class="screen" style="display:none">
+  <div class="login-card">
+    <div class="pending-box">
+      <div style="font-size:40px;margin-bottom:8px">⏳</div>
+      <h3 style="font-size:15px;font-weight:800;color:var(--amber-dark);margin-bottom:6px">طلبك بيتراجع</h3>
+      <p style="font-size:12px;color:var(--gray-600)">بعتنا طلبك لـ Admin عشان يوافق. استنى شوية وبعدين حاول تاني.</p>
+    </div>
+    <div style="font-size:12px;color:var(--gray-400);margin-top:10px">اسمك: <b id="pending-name-display" style="color:var(--amber-dark)"></b></div>
+    <button class="btn-login" style="margin-top:16px" onclick="checkApproval()">🔄 تحقق من الموافقة</button>
+    <div class="admin-link" onclick="backToLogin()">← رجوع</div>
+  </div>
+</div>
+
+<div id="admin-screen" class="screen" style="display:none">
+  <div class="login-card">
+    <div class="app-brand"><span class="logo">🔐</span><h1>Admin</h1><p>ادخل الباسورد</p></div>
+    <input class="field" type="password" id="admin-pass" placeholder="الباسورد..." onkeydown="if(event.key==='Enter')doAdminLogin()"/>
+    <button class="btn-login" onclick="doAdminLogin()">دخول ←</button>
+    <div class="admin-link" onclick="backToLogin()">← رجوع</div>
+  </div>
+</div>
+
+<div id="loading-screen" class="loading" style="display:none">
+  <svg width="40" height="40" fill="none" stroke="#b45309" stroke-width="2" viewBox="0 0 24 24" class="spin">
+    <line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/>
+    <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/>
+    <line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/>
+    <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
+  </svg>
+  <span id="loading-msg">جاري التحميل...</span>
+</div>
+
+<div id="app" style="display:none">
+  <header class="app-header no-print">
+    <div class="header-brand">
+      <span class="header-logo">🍳</span>
+      <div><div class="header-title">حاسبة الفطار</div><div class="header-sub">إدارة الطلبات والحسابات</div></div>
+    </div>
+    <div class="header-actions">
+      <span id="sync-badge" class="chip chip-loading">⏳</span>
+      <span id="admin-badge" class="chip chip-admin" style="display:none">👑 Admin</span>
+      <span id="pending-badge" style="display:none;cursor:pointer;background:#fee2e2;color:#991b1b;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;align-items:center;gap:3px" onclick="openPendingModal()">
+        <span class="notif-dot"></span><span id="pending-count">0</span> طلب
+      </span>
+      <div id="online-bar" style="display:flex;gap:4px;flex-wrap:wrap"></div>
+      <div id="receipt-btns" style="display:none;gap:5px"></div>
+      <div class="user-btn" onclick="switchUser()">
+        <div class="avatar" id="user-avatar">?</div>
+        <span id="user-name-display">أنت</span>
+        <span style="font-size:9px;color:#d97706">تغيير</span>
+      </div>
+    </div>
+  </header>
+  <div class="tabs-wrap no-print" id="tabs-wrap"></div>
+  <div class="body" id="app-body"></div>
+  <button id="chat-fab" class="chat-fab no-print" onclick="toggleChat()" aria-label="الشات الجماعي"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.9-.9L3 20.5l1.5-4.6A8.4 8.4 0 1 1 21 11.5z"/></svg><span id="chat-badge" class="chat-badge" style="display:none">0</span></button>
+  <aside id="chat-panel" class="chat-panel no-print" aria-label="شات الفطار">
+    <div class="chat-head"><div class="chat-head-title"><b>💬 شات الفطار</b><small>كل الشلة شايفة الرسايل</small></div><div class="chat-head-actions"><button id="chat-notif-btn" class="chat-hbtn" onclick="enableChatNotifs()">🔔 فعّل الإشعارات</button><button id="chat-clear-btn" class="chat-hbtn" onclick="clearChat()" title="مسح الشات">🗑️</button><button class="chat-hbtn" onclick="closeChat()" aria-label="إغلاق">✕</button></div></div>
+    <div id="chat-list" class="chat-list"></div>
+    <div id="chat-quick" class="chat-quick"></div>
+    <div id="chat-attach" class="chat-attach" style="display:none"></div>
+    <div class="chat-compose"><input type="file" id="chat-file" hidden onchange="onChatFilePick(this)"/><button class="chat-clip" onclick="document.getElementById('chat-file').click()" aria-label="إرفاق ملف" title="إرفاق صورة أو ملف (أو الصق صورة بـ Ctrl+V)"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m21.4 11.6-9.2 9.2a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"/></svg></button><textarea id="chat-input" rows="1" maxlength="500" placeholder="اكتب رسالة..." enterkeyhint="send" onkeydown="chatKey(event)" oninput="chatAutoGrow(this)"></textarea><button class="chat-send" onclick="sendChat()" aria-label="إرسال"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" style="transform:scaleX(-1)"><path d="M3.4 20.4 21 12 3.4 3.6 3.4 10l12.6 2-12.6 2z"/></svg></button></div>
+  </aside>
+</div>
+<div id="img-viewer" class="img-viewer" style="display:none" onclick="if(event.target===this)closeImageViewer()"><div class="iv-bar"><button onclick="downloadChatFile(document.getElementById('img-viewer').dataset.id)">⬇ تحميل</button><button onclick="closeImageViewer()">✕</button></div><span class="iv-status"></span><img alt=""/></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<div id="undo-toast" class="undo-toast"><span id="undo-text"></span><button onclick="undoLastDelete()">تراجع</button></div>
+
+<!-- MODALS -->
+<div class="overlay" id="edit-menu-modal" style="display:none" onclick="if(event.target===this)closeEditMenu()">
+  <div class="modal">
+    <div class="mhead"><h3>✏️ تعديل القائمة</h3><button class="icon-btn" onclick="closeEditMenu()">✕</button></div>
+    <div class="edit-search"><div class="search-box" style="margin:0"><input class="search-input" id="edit-menu-search" type="search" autocomplete="off" placeholder="ابحث عن الصنف اللي عايز تعدّله... (مثال: فول، اومليت)" oninput="renderEditBody()"/><div class="search-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div></div><div class="edit-meta" id="edit-menu-meta"></div></div>
+    <div class="mbody" id="edit-menu-body"></div>
+    <div class="mfoot" style="flex-direction:column">
+      <div style="display:flex;gap:5px">
+        <input class="edit-field" type="text" id="ni-name" placeholder="➕ اسم صنف جديد" onkeydown="if(event.key==='Enter')addMenuItem()"/>
+        <input class="edit-field-sm" type="number" id="ni-price" placeholder="بلدي"/>
+        <input class="edit-field-sm" type="number" id="ni-shami" placeholder="شامي"/>
+        <button class="btn btn-amber" onclick="addMenuItem()">+ إضافة</button>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px" onclick="saveMenuAndClose()">💾 حفظ</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="new-rest-modal" style="display:none" onclick="if(event.target===this)closeM('new-rest-modal')">
+  <div class="modal">
+    <div class="mhead"><h3>🍽️ مطعم جديد</h3><button class="icon-btn" onclick="closeM('new-rest-modal')">✕</button></div>
+    <div class="mbody">
+      <label class="section-label">اسم المطعم:</label>
+      <input class="edit-field" style="width:100%;margin-bottom:14px" type="text" id="new-rest-name" placeholder="مثال: بشندي"/>
+      <label class="section-label">إيموجي:</label>
+      <div class="emoji-grid" id="emoji-grid"></div>
+    </div>
+    <div class="mfoot"><button class="btn btn-primary" onclick="confirmNewRest()">إضافة</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="receipt-modal" style="display:none" onclick="if(event.target===this)closeM('receipt-modal')">
+  <div class="modal" style="max-width:660px">
+    <div class="mhead no-print"><h3 id="receipt-title">الريسيت</h3><button class="icon-btn" onclick="closeM('receipt-modal')">✕</button></div>
+    <div class="mbody" id="receipt-body"></div>
+    <div class="mfoot no-print">
+      <button class="btn btn-primary" onclick="window.print()">🖨️ طباعة</button>
+      <button class="btn btn-green" onclick="copyReceipt()">📋 نسخ</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="pending-modal" style="display:none" onclick="if(event.target===this)closeM('pending-modal')">
+  <div class="modal">
+    <div class="mhead"><h3>👥 طلبات الانضمام</h3><button class="icon-btn" onclick="closeM('pending-modal')">✕</button></div>
+    <div class="mbody" id="pending-body"></div>
+    <div class="mfoot"><button class="btn btn-primary" onclick="closeM('pending-modal')">إغلاق</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="ratings-modal" style="display:none" onclick="if(event.target===this)closeM('ratings-modal')">
+  <div class="modal" style="max-width:660px">
+    <div class="mhead"><h3>⭐ تقييمات الأصناف</h3><button class="icon-btn" onclick="closeM('ratings-modal')">✕</button></div>
+    <div class="mbody" id="ratings-body"></div>
+    <div class="mfoot"><button class="btn btn-primary" onclick="closeM('ratings-modal')">إغلاق</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="whatsapp-modal" style="display:none" onclick="if(event.target===this)closeM('whatsapp-modal')">
+  <div class="modal" style="max-width:560px">
+    <div class="mhead"><h3>📲 إرسال الطلب على واتساب</h3><button class="icon-btn" onclick="closeM('whatsapp-modal')">✕</button></div>
+    <div class="mbody">
+      <div style="font-size:11px;color:var(--gray-400);margin-bottom:12px">اختار شكل الرسالة اللي هتتبعت للمطعم</div>
+      <div style="border:1px solid var(--gray-200);border-radius:10px;padding:12px;margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px"><b style="font-size:12px">ملخص إجمالي</b><button class="btn btn-primary" style="font-size:11px" onclick="sendWhatsAppChoice('summary')">إرسال</button></div>
+        <pre id="wa-summary-preview" style="white-space:pre-wrap;font-family:'Cairo',sans-serif;font-size:11px;color:var(--gray-600);margin:0;max-height:150px;overflow:auto;background:var(--gray-50);padding:9px;border-radius:8px"></pre>
+      </div>
+      <div style="border:1px solid var(--gray-200);border-radius:10px;padding:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px"><b style="font-size:12px">كل شخص لوحده</b><button class="btn btn-primary" style="font-size:11px" onclick="sendWhatsAppChoice('people')">إرسال</button></div>
+        <pre id="wa-people-preview" style="white-space:pre-wrap;font-family:'Cairo',sans-serif;font-size:11px;color:var(--gray-600);margin:0;max-height:150px;overflow:auto;background:var(--gray-50);padding:9px;border-radius:8px"></pre>
+      </div>
+    </div>
+    <div class="mfoot"><button class="btn btn-primary" onclick="closeM('whatsapp-modal')">إغلاق</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="order-note-modal" style="display:none" onclick="if(event.target===this)closeM('order-note-modal')">
+  <div class="modal" style="max-width:420px">
+    <div class="mhead"><h3>📝 إضافة ملاحظة</h3><button class="icon-btn" onclick="closeM('order-note-modal')">✕</button></div>
+    <div class="mbody"><div id="order-note-item" style="font-weight:800;color:var(--gray-800);margin-bottom:12px"></div><label class="section-label" for="order-note-input">ملاحظة اختيارية</label><input id="order-note-input" class="field" style="margin-bottom:0" type="text" maxlength="120" placeholder="مثال: بدون سلطة، طحينة فقط..." onkeydown="if(event.key==='Enter')confirmOrderNote()"/></div>
+    <div class="mfoot"><button class="btn btn-primary" onclick="confirmOrderNote()">إضافة الطلب</button><button class="btn btn-ghost" onclick="closeM('order-note-modal')">إلغاء</button></div>
+  </div>
+</div>
+
+<script type="module">
+import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import{getDatabase,ref,set,get,update,push,onValue,remove,query,limitToLast}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+const app=initializeApp({apiKey:"AIzaSyAfob0MH4sp_wC3mZIfA3qdwmxOknw2-TQ",authDomain:"fetar-app-f2a59.firebaseapp.com",projectId:"fetar-app-f2a59",storageBucket:"fetar-app-f2a59.firebasestorage.app",messagingSenderId:"696479842849",appId:"1:696479842849:web:c34c99cc8e1a7aca981960",databaseURL:"https://fetar-app-f2a59-default-rtdb.europe-west1.firebasedatabase.app"});
+const db=getDatabase(app);
+window._db=db;window._ref=ref;window._set=set;window._get=get;window._update=update;window._push=push;window._onValue=onValue;window._remove=remove;window._query=query;window._limitToLast=limitToLast;window._dbReady=true;window.dispatchEvent(new Event('dbReady'));
+</script>
+
+<script>
+// الباسورد متخزن كـ SHA-256 بدل ما يبقى مكتوب صريح في الكود
+const ADMIN_PASS_HASH='8c6cf65ad67fa3600fbc7badb6d6ea8def75970d03b8ae157181de3861d85cea',ADMIN_NAME='عمرو',DEFAULT_WHATSAPP='201151818039',INSTAPAY_URL='https://ipn.eg/S/amrstyx1/instapay/2W8cdA',INSTAPAY_QR='https://api.qrserver.com/v1/create-qr-code/?size=240x240&data='+encodeURIComponent('https://ipn.eg/S/amrstyx1/instapay/2W8cdA'),HISTORY_DAYS=3;
+const PEOPLE_NAMES=['ماهر','شادي','عمرو','عمر','يوسف وليد','اسماعيل','سليم','خالد','مجدي','حسن'];
+const EMOJIS=['🍳','🥙','🍕','🍔','🌮','🍜','🥗','🍱','🫔','🧆','🥚','🥘','🍛','🫕','🍝','🥪','🧇','🥞'];
+const DEFAULT_MENU=[
+  {id:'f1',name:'فول',price:11.5,shamiPrice:16},{id:'f2',name:'فول عم بشندي',price:13.5,shamiPrice:18},{id:'f3',name:'فول مخصوص',price:13.5,shamiPrice:18},{id:'f4',name:'فول إسكندراني',price:13.5,shamiPrice:18},{id:'f5',name:'فول صلصة',price:13.5,shamiPrice:18},{id:'f6',name:'فول زبدة',price:13.5,shamiPrice:18},{id:'f7',name:'فول زيت زيتون',price:13.5,shamiPrice:18},{id:'f8',name:'فول زيت حار',price:12.5,shamiPrice:17},{id:'f9',name:'فول من القدرة',price:17.5,shamiPrice:22},{id:'f10',name:'فول بالفلفل',price:12,shamiPrice:17},{id:'f11',name:'فول على بطاطس',price:17.5,shamiPrice:22},{id:'f12',name:'فول على بذنجان',price:17.5,shamiPrice:22},{id:'f13',name:'فول على بابا غنوج',price:17.5,shamiPrice:22},{id:'f14',name:'فول على بيض',price:21.5,shamiPrice:25},{id:'f15',name:'فول أومليت',price:23.5,shamiPrice:28},{id:'f16',name:'فول سوسيس',price:23.5,shamiPrice:28},{id:'f17',name:'فول سجق',price:23.5,shamiPrice:28},{id:'f18',name:'فول بسطرمة',price:23.5,shamiPrice:28},{id:'f19',name:'فول ليمون معصفر',price:13.5,shamiPrice:18},
+  {id:'t1',name:'طعمية',price:11.5,shamiPrice:16},{id:'t2',name:'طعمية مخصوص',price:13.5,shamiPrice:18},{id:'t3',name:'طعمية ميكس',price:15.5,shamiPrice:20},{id:'t4',name:'طعمية محشية',price:13.5,shamiPrice:18},{id:'t5',name:'طعمية على بطاطس',price:17.5,shamiPrice:22},{id:'t6',name:'طعمية على بذنجان',price:17.5,shamiPrice:22},{id:'t7',name:'طعمية على مسقعة',price:17.5,shamiPrice:22},{id:'t8',name:'طعمية على بابا غنوج',price:17.5,shamiPrice:22},{id:'t9',name:'طعمية على جبنة قديمة',price:17.5,shamiPrice:22},{id:'t10',name:'طعمية على قريش',price:18.5,shamiPrice:23},{id:'t11',name:'طعمية على فيتا',price:20.5,shamiPrice:25},{id:'t12',name:'طعمية عين كتكوت',price:20.5,shamiPrice:25},{id:'t13',name:'طعمية على بيض',price:23.5,shamiPrice:28},{id:'t14',name:'طعمية على سوسيس',price:23.5,shamiPrice:28},{id:'t15',name:'طعمية على بسطرمة',price:21.5,shamiPrice:26},{id:'t16',name:'طعمية أومليت',price:18.5,shamiPrice:23},{id:'t17',name:'طعمية جبنة كيري',price:18.5,shamiPrice:23},{id:'t18',name:'طعمية موتزاريلا',price:18.5,shamiPrice:23},{id:'t19',name:'طعمية رومي',price:18.5,shamiPrice:23},{id:'t20',name:'طعمية جبنة شيدر',price:18.5,shamiPrice:23},
+  {id:'b1',name:'بطاطس صوابع',price:16.5,shamiPrice:21},{id:'b2',name:'بطاطس شيبسي',price:16.5,shamiPrice:21},{id:'b3',name:'بطاطس فريسكا',price:16.5,shamiPrice:21},{id:'b4',name:'بطاطس باتي',price:18.5,shamiPrice:23},{id:'b5',name:'بطاطس كاتشب',price:18.5,shamiPrice:23},{id:'b6',name:'بطاطس مايونيز',price:18.5,shamiPrice:23},{id:'b7',name:'بطاطس كاتشب ومايونيز',price:22.5,shamiPrice:27},{id:'b8',name:'بطاطس على بابا غنوج',price:22.5,shamiPrice:27},{id:'b9',name:'بطاطس على بذنجان',price:22.5,shamiPrice:27},{id:'b10',name:'بطاطس على مسقعة',price:22.5,shamiPrice:27},{id:'b11',name:'بطاطس على بيض',price:24.5,shamiPrice:29},{id:'b12',name:'بطاطس على أومليت',price:27.5,shamiPrice:32},{id:'b13',name:'بطاطس شيدر',price:27.5,shamiPrice:32},{id:'b14',name:'بطاطس رومي',price:27.5,shamiPrice:32},{id:'b15',name:'بطاطس موتزاريلا',price:27.5,shamiPrice:32},{id:'b16',name:'بطاطس سجق',price:27.5,shamiPrice:32},{id:'b17',name:'بطاطس سوسيس',price:27.5,shamiPrice:32},{id:'b18',name:'بطاطس بسطرمة',price:27.5,shamiPrice:32},{id:'b19',name:'بطاطس بازوكا',price:32.5,shamiPrice:37},{id:'b20',name:'بطاطس ميكس جبن',price:32.5,shamiPrice:37},{id:'b21',name:'مهروسة',price:16.5,shamiPrice:21},{id:'b22',name:'مهروسة زبدة',price:19.5,shamiPrice:24},{id:'b23',name:'مهروسة بيض',price:23.5,shamiPrice:28},{id:'b24',name:'مهروسة أومليت',price:24.5,shamiPrice:29},{id:'b25',name:'مهروسة رومي',price:27.5,shamiPrice:32},{id:'b26',name:'مهروسة شيدر',price:27.5,shamiPrice:32},{id:'b27',name:'مهروسة موتزاريلا',price:27.5,shamiPrice:32},{id:'b28',name:'مهروسة جبنة قريش',price:22.5,shamiPrice:25},{id:'b29',name:'مهروسة بازوكا',price:32.5,shamiPrice:37},{id:'b30',name:'مهروسة ميكس جبن',price:32.5,shamiPrice:37},
+  {id:'o1',name:'أومليت سادة',price:16.5,shamiPrice:21},{id:'o2',name:'أومليت زبدة',price:19.5,shamiPrice:24},{id:'o3',name:'أومليت إسكندراني',price:19.5,shamiPrice:24},{id:'o4',name:'أومليت سجق',price:27.5,shamiPrice:32},{id:'o5',name:'أومليت سوسيس',price:27.5,shamiPrice:32},{id:'o6',name:'أومليت بسطرمة',price:27.5,shamiPrice:32},{id:'o7',name:'أومليت رومي',price:27.5,shamiPrice:32},{id:'o8',name:'أومليت شيدر',price:27.5,shamiPrice:32},{id:'o9',name:'أومليت موتزاريلا',price:27.5,shamiPrice:32},{id:'o10',name:'أومليت خلطة',price:19,shamiPrice:24},{id:'o11',name:'أومليت بيتزا',price:25.5,shamiPrice:30},{id:'o12',name:'أومليت أباتشي',price:32.5,shamiPrice:37},{id:'o13',name:'أومليت ميكس جبن',price:32.5,shamiPrice:37},{id:'o14',name:'أومليت جبنة كيري',price:24.5,shamiPrice:29},{id:'o15',name:'بيض مسلوق',price:16.5,shamiPrice:21},{id:'o16',name:'بيض مسلوق زبدة',price:19.5,shamiPrice:24},{id:'o17',name:'بيض مسلوق مددرج',price:19.5,shamiPrice:24},
+  {id:'s1',name:'شكشوكة',price:15.5,shamiPrice:20},{id:'s2',name:'بابا غنوج',price:15.5,shamiPrice:20},{id:'s3',name:'مسقعة',price:15.5,shamiPrice:20},{id:'s4',name:'مسقعة سجق',price:25.5,shamiPrice:30},{id:'s5',name:'دينامايت',price:27.5,shamiPrice:32},{id:'s7',name:'عجة فرنساوي',price:15.5,shamiPrice:20},{id:'s8',name:'جبنة قريش',price:15.5,shamiPrice:20},{id:'s9',name:'جبنة قديمة',price:15.5,shamiPrice:20},{id:'s10',name:'جبنة فيتا',price:15.5,shamiPrice:20},{id:'s11',name:'جبنة مقلية بطاطس',price:27.5,shamiPrice:32},{id:'s12',name:'جبنة مقلية جامبو',price:37.5,shamiPrice:42},{id:'s13',name:'جبنة قريش رومي',price:25.5,shamiPrice:30},{id:'s14',name:'جبنة قريش بالبيض',price:25.5,shamiPrice:30},
+  {id:'h1',name:'حلاوة بالقشطة',price:31},{id:'h2',name:'مربى بالقشطة',price:31},{id:'h3',name:'حلاوة',price:26},{id:'h4',name:'مربى',price:26},{id:'h5',name:'سكلانس',price:36}
+];
+
+let state={restaurants:[],activityLog:[],onlineUsers:{},pendingUsers:{},ratings:{},orderSheets:{},drafts:{}};
+let currentUser=null,isAdmin=false,activeRestId=null,activePerson=null,tempMenu=[],editingRestId=null,selEmoji2='🍳',undoAction=null,undoTimer=null,loginNames=[],adminMenuScroll=0,pendingOrder=null,adminPage='orders',historyDays=3;
+let db,fbRef,fbSet,fbGet,fbUpdate,fbPush,fbOnValue,fbRemove;
+let listenersReady=false,heartbeatTimer=null,menuCat='',toastTimer=null;
+
+// ===== Helpers: SHA-256 / toast / Arabic search =====
+function sha256(str){const K=[],H=[];let p=2,n=0;const isP=x=>{for(let i=2;i*i<=x;i++)if(x%i===0)return false;return true};const fr=x=>(x-Math.floor(x))*4294967296|0;while(n<64){if(isP(p)){if(n<8)H[n]=fr(Math.pow(p,1/2));K[n]=fr(Math.pow(p,1/3));n++;}p++;}
+  const b=unescape(encodeURIComponent(str)),w=[],l=b.length*8;let i;for(i=0;i<b.length;i++)w[i>>2]|=b.charCodeAt(i)<<(24-(i%4)*8);w[l>>5]|=0x80<<(24-l%32);w[((l+64>>9)<<4)+15]=l;
+  const r=(x,c)=>(x>>>c)|(x<<(32-c));for(i=0;i<w.length;i+=16){const W=Array.from({length:16},(_,k)=>w[i+k]|0);let[a,b2,c,d,e,f,g,h]=H;for(let j=0;j<64;j++){if(j>=16){const x=W[j-15],y=W[j-2];W[j]=(W[j-16]+(r(x,7)^r(x,18)^(x>>>3))+W[j-7]+(r(y,17)^r(y,19)^(y>>>10)))|0;}const t1=(h+(r(e,6)^r(e,11)^r(e,25))+((e&f)^(~e&g))+K[j]+(W[j]|0))|0,t2=((r(a,2)^r(a,13)^r(a,22))+((a&b2)^(a&c)^(b2&c)))|0;h=g;g=f;f=e;e=(d+t1)|0;d=c;c=b2;b2=a;a=(t1+t2)|0;}
+  H[0]=(H[0]+a)|0;H[1]=(H[1]+b2)|0;H[2]=(H[2]+c)|0;H[3]=(H[3]+d)|0;H[4]=(H[4]+e)|0;H[5]=(H[5]+f)|0;H[6]=(H[6]+g)|0;H[7]=(H[7]+h)|0;}
+  return H.map(x=>(x>>>0).toString(16).padStart(8,'0')).join('');}
+function toast(msg,kind){const el=document.getElementById('toast');if(!el)return;el.textContent=String(msg);el.className='toast show'+(kind?' '+kind:(/❌|غلط|تعذر|لا يوجد|لا توجد|غير صحيح|ادخل|اختر|اكتب|منع|لا يمكن/.test(msg)?' err':''));clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.className='toast',2600);}
+function normAr(s){return String(s||'').toLowerCase().replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/[ًٌٍَُِّْـ]/g,'').trim();}
+function menuCategories(menu){const c={};(menu||[]).forEach(i=>{const k=String(i.name||'').trim().split(/\s+/)[0];if(k)c[k]=(c[k]||0)+1;});return Object.entries(c).filter(([,n])=>n>=3).sort((a,b)=>b[1]-a[1]).map(([k])=>k);}
+function filterMenuItems(menu,q){const nq=normAr(q);return(menu||[]).filter(i=>{const nn=normAr(i.name);return(!nq||nn.includes(nq))&&(!menuCat||nn.startsWith(normAr(menuCat)));}).sort((a,b)=>a.name.localeCompare(b.name,'ar'));}
+
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function lsRm(k){try{localStorage.removeItem(k)}catch(e){}}
+function uuid(){return'i'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function jsArg(s){return JSON.stringify(String(s??''));}
+function jsAttr(s){return esc(jsArg(s));}
+function ini(n){return n?n.trim().split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase():'?'}
+function tnow(){return new Date().toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})}
+function dnow(){return new Date().toLocaleDateString('ar-EG')}
+function priceForOrder(o,menu){const item=menu?.find(i=>i.id===o.menuItemId);return item?(o.type==='shami'?(item.shamiPrice??item.price):item.price):Number(o.price)||0;}
+function calcT(p,fee,menu){const s=(p.orders||[]).reduce((t,o)=>t+priceForOrder(o,menu)*o.quantity,0);return s>0?s+(fee||0):0;}
+function derivedPaymentStatus(p,total){if(p.paymentStatus)return p.paymentStatus;const paid=parseFloat(p.amountPaid)||0;if(paid<=0)return'unpaid';if(paid<total)return'partial';if(paid>total)return'credit';return'paid';}
+function paymentStatusTxt(s){return s==='paid'?'مدفوع':s==='partial'?'دفع جزئي':s==='credit'?'له رصيد':'لم يدفع';}
+function paymentStatusColor(s){return s==='paid'?'var(--green)':s==='partial'?'var(--amber)':s==='credit'?'var(--blue)':'var(--red)';}
+function orderDateLabel(o){return o?.orderDate||(o?.orderedAt?new Date(o.orderedAt).toLocaleDateString('ar-EG'):dnow());}
+function restaurantOrderDate(r){const orders=(r.people||[]).flatMap(p=>p.orders||[]).filter(Boolean).sort((a,b)=>(b.orderedAt||0)-(a.orderedAt||0));return orderDateLabel(orders[0]);}
+function typeTxt(t){return t==='baladi'?' (بلدي)':t==='shami'?' (شامي)':'';}
+function noteHtml(o){return o?.note?`<div class="order-note-text">ملاحظة: ${esc(o.note)}</div>`:'';}
+function noteEditButton(rId,pId,o){return`<button class="icon-btn" style="font-size:10px;padding:2px 5px" onclick="event.stopPropagation();editOrderNote('${rId}','${pId}','${o.orderId}')">📝 ${o.note?'تعديل الملاحظة':'ملاحظة'}</button>`;}
+function getR(){return state.restaurants?.find(r=>r.id===activeRestId)}
+function closeM(id){document.getElementById(id).style.display='none';}
+function setSync(t,tx){const b=document.getElementById('sync-badge');b.className='chip chip-'+t;b.textContent=tx;}
+function setMsg(m){const el=document.getElementById('loading-msg');if(el)el.textContent=m;}
+function showOperationError(){if(document.getElementById('app')?.style.display==='block')setSync('err','❌ تعذر الحفظ');}
+window.addEventListener('unhandledrejection',e=>{console.error(e.reason);showOperationError();});
+window.addEventListener('error',e=>{console.error(e.error||e.message);showOperationError();});
+
+function waitForDB(){return new Promise(resolve=>{
+  if(window._dbReady){db=window._db;fbRef=window._ref;fbSet=window._set;fbGet=window._get;fbUpdate=window._update;fbPush=window._push;fbOnValue=window._onValue;fbRemove=window._remove;resolve();}
+  else window.addEventListener('dbReady',()=>{db=window._db;fbRef=window._ref;fbSet=window._set;fbGet=window._get;fbUpdate=window._update;fbPush=window._push;fbOnValue=window._onValue;fbRemove=window._remove;resolve();},{once:true});
+});}
+async function fbRead(path){const s=await fbGet(fbRef(db,path));return s.exists()?s.val():null;}
+async function fbWrite(path,data){await fbSet(fbRef(db,path),data);}
+async function fbPatch(path,data){await fbUpdate(fbRef(db,path),data);}
+function fbListen(path,cb){return fbOnValue(fbRef(db,path),s=>cb(s.val()));}
+async function fbDel(path){await fbRemove(fbRef(db,path));}
+function userKey(name){return String(name).trim().replace(/[.#$\[\]/\\]/g,'_').replace(/\s+/g,'_');}
+function personRecord(name){const key=userKey(name);return {id:key,name,orders:{},amountPaid:'',savedBalance:'',paymentStatus:'unpaid',paymentUpdatedAt:''};}
+async function ensureUserInRestaurants(){if(isAdmin||!currentUser)return;for(const r of state.restaurants){if(!(r.people||[]).some(p=>p.name===currentUser))await fbWrite(`restaurants/${r.id}/people/${userKey(currentUser)}`,personRecord(currentUser));}}
+
+// ===== LOGIN =====
+async function buildLogin(){
+  try{await waitForDB();const data=await fbRead('restaurants');loginNames=[...new Set(Object.values(data||{}).flatMap(r=>Object.values(r.people||{}).map(p=>p.name).filter(n=>n&&n!=='شخص جديد')))];}catch(e){loginNames=[];}if(!loginNames.length)loginNames=[...PEOPLE_NAMES];loginNames.sort((a,b)=>a.localeCompare(b,'ar'));
+  document.getElementById('name-grid').innerHTML=loginNames.map(n=>`<button class="name-btn" onclick="pickName(this,${jsAttr(n)})">${esc(n)}</button>`).join('');
+  const saved=lsGet('fetar_user');
+  if(saved==='__admin__')doLoginAs(ADMIN_NAME,true);
+  else if(saved)tryAuto(saved);
+}
+function pickName(el,n){document.querySelectorAll('.name-btn').forEach(b=>b.classList.remove('selected'));el.classList.add('selected');document.getElementById('custom-name').value='';document.getElementById('login-btn').disabled=false;document.getElementById('login-btn').dataset.n=n;}
+function onCustomInput(){const v=document.getElementById('custom-name').value.trim();document.querySelectorAll('.name-btn').forEach(b=>b.classList.remove('selected'));document.getElementById('login-btn').disabled=!v;document.getElementById('login-btn').dataset.n=v;}
+async function tryAuto(name){await waitForDB();const ok=await fbRead('approvedUsers/'+name.replace(/\s/g,'_'));if(ok||PEOPLE_NAMES.includes(name)||name===ADMIN_NAME)doLoginAs(name,false);}
+async function doLogin(){
+  const n=document.getElementById('login-btn').dataset.n;if(!n)return;
+  await waitForDB();
+  if(PEOPLE_NAMES.includes(n)){doLoginAs(n,false);return;}
+  doLoginAs(n,false);
+}
+async function checkApproval(){const n=lsGet('fetar_pending');if(!n)return;await waitForDB();const ok=await fbRead('approvedUsers/'+n.replace(/\s/g,'_'));if(ok){lsRm('fetar_pending');doLoginAs(n,false);}else toast('لسه مفيش موافقة ⏳');}
+function showAdminLogin(){document.getElementById('login-screen').style.display='none';document.getElementById('admin-screen').style.display='flex';setTimeout(()=>document.getElementById('admin-pass').focus(),100);}
+function backToLogin(){['admin-screen','pending-screen'].forEach(id=>document.getElementById(id).style.display='none');document.getElementById('login-screen').style.display='flex';}
+async function doAdminLogin(){const inp=document.getElementById('admin-pass');if(sha256(inp.value)!==ADMIN_PASS_HASH){toast('باسورد غلط! ❌');inp.select();return;}inp.value='';doLoginAs(ADMIN_NAME,true);}
+async function doLoginAs(name,admin){
+  currentUser=name;isAdmin=admin;lsSet('fetar_user',admin?'__admin__':name);
+  ['login-screen','admin-screen','pending-screen'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('loading-screen').style.display='flex';
+  document.getElementById('user-avatar').textContent=ini(name);
+  document.getElementById('user-name-display').textContent=name+(admin?' 👑':'');
+  document.getElementById('admin-badge').style.display=admin?'inline-flex':'none';if(!admin){document.getElementById('receipt-btns').style.display='none';document.getElementById('pending-badge').style.display='none';}
+  await waitForDB();init();
+}
+function switchUser(){if(!confirm('تسجيل خروج وتغيير المستخدم؟'))return;closeChat();clearInterval(heartbeatTimer);heartbeatTimer=null;if(currentUser&&fbDel)fbDel('onlineUsers/'+currentUser.replace(/\s/g,'_')).catch(()=>{});lsRm('fetar_user');activePerson=null;adminPage='orders';currentUser=null;isAdmin=false;document.getElementById('app').style.display='none';document.getElementById('admin-badge').style.display='none';document.getElementById('pending-badge').style.display='none';document.getElementById('receipt-btns').style.display='none';document.getElementById('login-screen').style.display='flex';buildLogin();}
+
+// ===== INIT =====
+async function init(){
+  try{
+    setMsg('جاري التحميل...');
+    const existing=await fbRead('restaurants');
+    if(!existing){
+      setMsg('إنشاء البيانات...');
+      await fbWrite('restaurants/rest1',{id:'rest1',name:'بشندي',emoji:'🥙',deliveryFee:1,whatsapp:DEFAULT_WHATSAPP,menu:Object.fromEntries(DEFAULT_MENU.map(i=>[i.id,i])),people:Object.fromEntries(PEOPLE_NAMES.map(n=>[n.replace(/\s/g,'_'),{id:n.replace(/\s/g,'_'),name:n,orders:{},amountPaid:'',paymentStatus:'unpaid'}]))});
+    }
+    if(!listenersReady){listenersReady=true;
+     fbListen('restaurants',data=>{
+       state.restaurants=data?Object.values(data).map(r=>({...r,menu:r.menu?Object.values(r.menu):[],people:r.people?Object.values(r.people).map(p=>({...p,orders:p.orders?Object.values(p.orders):[]})):[]})): [];
+       if(!activeRestId&&state.restaurants.length)activeRestId=state.restaurants[0].id;
+       renderAll();setSync('ok','🔥 Firebase');
+       ensureUserInRestaurants().catch(e=>console.warn('تعذر إضافة المستخدم للمطاعم',e));
+     });
+    fbListen('activityLog',data=>{state.activityLog=data?Object.values(data).sort((a,b)=>b.ts-a.ts):[];renderLogOnly();});
+    fbListen('onlineUsers',data=>{state.onlineUsers=data||{};renderOnline();});
+    fbListen('pendingUsers',data=>{
+      state.pendingUsers=data||{};
+      if(isAdmin){const cnt=Object.keys(state.pendingUsers).length;const b=document.getElementById('pending-badge');if(cnt>0){b.style.display='inline-flex';document.getElementById('pending-count').textContent=cnt;}else b.style.display='none';}
+    });
+     fbListen('ratings',data=>{state.ratings=data||{};if(document.getElementById('app').style.display==='block')renderAll();});
+     fbListen('orderSheets',data=>{state.orderSheets=data||{};if(document.getElementById('app').style.display==='block')renderAll();});
+     fbListen('drafts',data=>{state.drafts=data||{};if(document.getElementById('app').style.display==='block')renderAll();});
+     listenChat();
+     fbListen('rolls',data=>{state.rolls=data||{};if(document.getElementById('app').style.display==='block')renderAll();});
+    }else{renderAll();ensureUserInRestaurants().catch(()=>{});}
+    const beat=()=>currentUser&&fbPatch('onlineUsers',{[currentUser.replace(/\s/g,'_')]:{name:currentUser,at:Date.now()}}).catch(()=>{});
+    await beat();clearInterval(heartbeatTimer);heartbeatTimer=setInterval(beat,20000);
+    document.getElementById('loading-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    if(isAdmin)renderReceiptBtns();
+    updateChatBadge();renderChatHeader();
+    addLog('فتح التطبيق');
+  }catch(e){setSync('err','❌ خطأ');document.getElementById('loading-screen').innerHTML=`<div style="color:#dc2626;text-align:center;padding:30px">❌ خطأ Firebase<br><small>${e.message}</small><br><small style="color:#6b7280">تأكد من تفعيل Realtime Database وضبط الـ Rules على true</small></div>`;}
+}
+async function addLog(action,extra=''){try{await fbPush(fbRef(db,'activityLog'),{user:currentUser,action,extra:extra||'',time:tnow(),ts:Date.now()});}catch(e){}}
+
+// ===== PENDING =====
+function openPendingModal(){
+  const items=Object.values(state.pendingUsers||{});
+  document.getElementById('pending-body').innerHTML=items.length?items.map(p=>`
+    <div class="pending-item">
+      <div><div class="pending-name">👤 ${esc(p.name)}</div><div style="font-size:10px;color:var(--gray-400)">${p.time||''}</div></div>
+      <div style="display:flex;gap:5px">
+        <button class="approve-btn" onclick="approveUser(${jsAttr(p.name)})">✅ قبول</button>
+        <button class="reject-btn" onclick="rejectUser(${jsAttr(p.name)})">❌ رفض</button>
+      </div>
+    </div>`).join(''):`<div class="empty-msg">لا يوجد طلبات انتظار</div>`;
+  document.getElementById('pending-modal').style.display='flex';
+}
+async function approveUser(name){
+  const key=name.replace(/\s/g,'_');
+  await fbWrite('approvedUsers/'+key,{name,approvedAt:Date.now()});
+  for(const r of state.restaurants){const ex=await fbRead(`restaurants/${r.id}/people/${key}`);if(!ex)await fbWrite(`restaurants/${r.id}/people/${key}`,personRecord(name));}
+  await fbDel('pendingUsers/'+key);
+  addLog('وافق على انضمام',name);toast(`تم قبول ${name} ✅`);openPendingModal();
+}
+async function rejectUser(name){if(!confirm(`رفض ${name}؟`))return;await fbDel('pendingUsers/'+name.replace(/\s/g,'_'));addLog('رفض طلب',name);openPendingModal();}
+
+// ===== RATINGS =====
+function ratingOwner(){return isAdmin?'__admin__':String(currentUser||'').replace(/\s/g,'_');}
+async function rateItem(menuId,menuName,stars){
+  const key=`${menuId}_${ratingOwner()}`;
+  if(getMyRating(menuId)===stars){await fbDel(`ratings/${key}`);addLog(`ألغى تقييم ${menuName}`);return;}
+  await fbWrite(`ratings/${key}`,{menuId,menuName,user:isAdmin?ADMIN_NAME:currentUser,stars,ts:Date.now()});
+  addLog(`قيّم ${menuName} بـ ${stars} نجوم`);
+}
+function getAvg(menuId){const e=Object.values(state.ratings||{}).filter(r=>r.menuId===menuId);if(!e.length)return{avg:0,count:0};return{avg:e.reduce((s,r)=>s+r.stars,0)/e.length,count:e.length};}
+function getMyRating(menuId){return state.ratings?.[`${menuId}_${ratingOwner()}`]?.stars||0;}
+function openRatingsModal(){
+  const r=getR();if(!r)return;
+  const sorted=[...(r.menu||[])].map(i=>{const{avg,count}=getAvg(i.id);return{...i,avg,count};}).filter(i=>i.count>0).sort((a,b)=>b.avg-a.avg);
+  document.getElementById('ratings-body').innerHTML=`<div style="font-size:12px;color:var(--gray-400);margin-bottom:12px">ترتيب الأصناف من الأعلى تقييماً</div>
+    ${sorted.length?sorted.map((item,i)=>`<div class="rating-item">
+      <div><div style="font-weight:700;font-size:13px">${i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)} ${esc(item.name)}</div><div style="font-size:10px;color:var(--gray-400)">${item.count} تقييم</div></div>
+      <div style="text-align:center"><div style="font-size:1.4rem;font-weight:900;color:var(--amber-dark)">${item.avg.toFixed(1)}</div><div>${'⭐'.repeat(Math.round(item.avg))}</div></div>
+    </div>`).join(''):`<div class="empty-msg">لا يوجد تقييمات بعد</div>`}`;
+  document.getElementById('ratings-modal').style.display='flex';
+}
+
+// ===== RENDER =====
+const ICON_SEARCH='<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+// يعيد رسم الصفحة مع الحفاظ على الحقل اللي المستخدم بيكتب فيه (عشان التحديثات اللحظية ماتمسحش اللي بتكتبه)
+function renderAll(){
+  const ae=document.activeElement,fk=ae&&ae.dataset?ae.dataset.fk:null,fkVal=fk?ae.value:null;let fkSel=null;try{if(fk&&ae.selectionStart!=null)fkSel=[ae.selectionStart,ae.selectionEnd];}catch(e){}
+  const scrollY=window.scrollY,query=document.getElementById('usearch')?.value||'',menuTop=document.getElementById('user-menu')?.getBoundingClientRect().top,adminMenu=document.getElementById(`amenu-${activeRestId}`),adminScroll=Math.max(adminMenuScroll,adminMenu?.scrollTop||0),adminQuery=document.getElementById(`asearch-${activeRestId}`)?.value||'';
+  renderTabs();renderOnline();isAdmin?renderAdmin():renderUser();
+  if(!isAdmin&&query){const input=document.getElementById('usearch');if(input){input.value=query;filterUserMenu(activeRestId);}}
+  if(isAdmin&&adminQuery){const input=document.getElementById(`asearch-${activeRestId}`);if(input){input.value=adminQuery;filterAdminMenu(activeRestId);}}
+  if(fk){const el=document.querySelector(`[data-fk="${CSS.escape(fk)}"]`);if(el){const dirty=fkVal!==el.defaultValue;el.value=fkVal;el.focus({preventScroll:true});if(fkSel)try{el.setSelectionRange(fkSel[0],fkSel[1]);}catch(e){}
+    if(dirty&&el.getAttribute('onchange')){el.addEventListener('change',()=>{el._changed=true;},{once:true});el.addEventListener('blur',()=>{if(!el._changed&&el.value!==el.defaultValue)el.dispatchEvent(new Event('change'));},{once:true});}}}
+  requestAnimationFrame(()=>{const newMenuTop=document.getElementById('user-menu')?.getBoundingClientRect().top;const delta=menuTop!=null&&newMenuTop!=null?newMenuTop-menuTop:0;window.scrollTo({top:Math.max(0,scrollY+delta),behavior:'auto'});const newAdminMenu=document.getElementById(`amenu-${activeRestId}`);if(newAdminMenu){newAdminMenu.scrollTop=adminScroll;adminMenuScroll=adminScroll;}});
+}
+function renderOnline(){const now=Date.now(),active=Object.values(state.onlineUsers||{}).filter(v=>v&&now-v.at<40000);const el=document.getElementById('online-bar');if(!el)return;el.innerHTML=active.length?`<div class="online-stack" title="${esc(active.map(v=>v.name).join('، '))}"><span class="online-dot"></span>${active.slice(0,4).map(v=>`<span class="online-av">${esc(ini(v.name))}</span>`).join('')}${active.length>4?`<span class="online-av more">+${active.length-4}</span>`:''}<span class="online-count">${active.length} أونلاين</span></div>`:'';}
+function renderReceiptBtns(){const el=document.getElementById('receipt-btns');el.style.display='flex';el.innerHTML=`<button class="btn btn-green" onclick="showReceipt('brief')">🧾 مختصر</button><button class="btn btn-purple" onclick="showReceipt('detailed')">📋 مفصل</button><button class="btn btn-amber" onclick="showReceipt('restaurant')">🍳 المطعم</button><button class="btn btn-primary" onclick="adminPage='history';renderAll()">📚 الحسابات</button>`;}
+function renderLogOnly(){const el=document.getElementById('log-inner');if(!el)return;const log=state.activityLog||[];el.innerHTML=log.length?log.slice(0,40).map(l=>`<div class="log-row"><div class="log-av">${ini(l.user)}</div><div><div class="log-txt"><strong>${esc(l.user)}</strong> ${esc(l.action)}${l.extra?` <span style="color:var(--gray-400)">${esc(l.extra)}</span>`:''}</div><div class="log-time">${l.time||''}</div></div></div>`).join(''):`<div class="empty-msg">لا يوجد أنشطة</div>`;}
+
+function renderTabs(){document.getElementById('tabs-wrap').innerHTML=state.restaurants.map(r=>{const cnt=r.people?.reduce((s,p)=>s+(p.orders?.length||0),0)||0;return`<button class="tab ${r.id===activeRestId?'active':''}" onclick="switchTab('${r.id}')">${r.emoji} ${esc(r.name)} ${cnt?`<span class="tab-badge">${cnt}</span>`:''}</button>`;}).join('')+(isAdmin?`<button class="tab-add" title="مطعم جديد" onclick="openNewRest()">＋ مطعم</button>`:'');}
+function switchTab(id){activeRestId=id;activePerson=null;adminMenuScroll=0;renderAll();}
+
+
+async function confirmOrderSheet(rId){const r=state.restaurants.find(x=>x.id===rId);if(!r)return;const people={};for(const p of r.people||[]){if(!(p.orders||[]).length)continue;people[p.id]={id:p.id,name:p.name,total:calcT(p,r.deliveryFee,r.menu),amountPaid:parseFloat(p.amountPaid)||0,paymentStatus:derivedPaymentStatus(p,calcT(p,r.deliveryFee,r.menu)),orders:(p.orders||[]).map(o=>({...o,price:priceForOrder(o,r.menu)}))};}if(!Object.keys(people).length)return toast('لا توجد طلبات لحفظها');const today=restaurantOrderDate(r),dup=Object.values(state.orderSheets||{}).some(s=>!s.voided&&s.restaurantId===r.id&&s.orderDate===today&&Math.abs(Number(s.total||0)-Object.values(people).reduce((n,p)=>n+p.total,0))<.01);if(!confirm(dup?'⚠️ فيه شيت محفوظ النهارده بنفس الإجمالي — متأكد إنك عايز تحفظه تاني؟':`تأكيد وحفظ شيت ${r.name} (${Object.keys(people).length} أشخاص)؟`))return;const id=`${r.id}_${Date.now()}`;const sheet={id,restaurantId:r.id,restaurantName:r.name,orderDate:restaurantOrderDate(r),confirmedAt:Date.now(),confirmedBy:currentUser,deliveryFee:r.deliveryFee,people,total:Object.values(people).reduce((s,p)=>s+p.total,0)};await fbWrite(`orderSheets/${id}`,sheet);addLog('أكد وحفظ شيت الأوردر',r.name);adminPage='history';renderAll();}
+function backToOrders(){adminPage='orders';renderAll();}
+function filterUserMenu(rId,pId){const r=state.restaurants.find(x=>x.id===rId);if(!r)return;pId=pId||r.people?.find(p=>p.name===currentUser)?.id;const items=filterMenuItems(r.menu,document.getElementById('usearch')?.value||'',menuCat);const el=document.getElementById('user-menu');if(el)el.innerHTML=items.length?renderUserItems(items,rId,pId):`<div class="empty-msg">مفيش أصناف بالاسم ده 🤷</div>`;}
+function setMenuCat(rId,c){menuCat=menuCat===c?'':c;document.querySelectorAll('.cat-chip').forEach(b=>b.classList.toggle('active',b.dataset.cat===menuCat));filterUserMenu(rId);}
+function addButtonFeedback(btn){if(!btn)return;btn.classList.remove('order-pop');void btn.offsetWidth;btn.classList.add('order-pop');const rect=btn.getBoundingClientRect(),f=document.createElement('span');f.className='order-float';f.textContent='+1';f.style.left=`${rect.left+rect.width/2-8}px`;f.style.top=`${rect.top-6}px`;document.body.appendChild(f);setTimeout(()=>f.remove(),800);}
+document.addEventListener('pointerdown',e=>{const btn=e.target.closest?.('.btn-b,.btn-s,.btn-add');if(btn)addButtonFeedback(btn);});
+document.addEventListener('scroll',e=>{if(e.target?.id?.startsWith('amenu-'))adminMenuScroll=e.target.scrollTop;},true);
+
+function openOrderNote(kind,rId,pId,menuId,type){const r=state.restaurants.find(x=>x.id===rId),item=r?.menu?.find(x=>x.id===menuId);if(!item)return;pendingOrder={kind,rId,pId,menuId,type};document.getElementById('order-note-item').textContent=`${item.name}${typeTxt(type)}`;document.getElementById('order-note-input').value='';document.getElementById('order-note-modal').style.display='flex';setTimeout(()=>document.getElementById('order-note-input').focus(),50);}
+async function confirmOrderNote(){if(!pendingOrder)return;const p=pendingOrder,note=document.getElementById('order-note-input').value.trim();pendingOrder=null;closeM('order-note-modal');if(p.kind==='draftnote'){await fbPatch(draftPath(p.rId,p.pId,p.orderId),{note});return;}if(p.kind==='edit'){await fbPatch(`restaurants/${p.rId}/people/${p.pId}/orders/${p.orderId}`,{note});addLog('عدّل ملاحظة طلب');return;}if(p.kind==='admin')await addO(p.rId,p.menuId,p.type,note);else await addMyOrder(p.rId,p.pId,p.menuId,p.type,note);}
+function editOrderNote(rId,pId,orderId){const r=state.restaurants.find(x=>x.id===rId),p=r?.people?.find(x=>x.id===pId),o=p?.orders?.find(x=>x.orderId===orderId);if(!o)return;pendingOrder={kind:'edit',rId,pId,orderId};document.getElementById('order-note-item').textContent=`ملاحظة: ${o.name}`;document.getElementById('order-note-input').value=o.note||'';document.getElementById('order-note-modal').style.display='flex';setTimeout(()=>document.getElementById('order-note-input').focus(),50);}
+function showUndo(text,action){clearTimeout(undoTimer);undoAction=action;const box=document.getElementById('undo-toast');document.getElementById('undo-text').textContent=text;box.style.display='flex';undoTimer=setTimeout(()=>{box.style.display='none';undoAction=null;},8000);}
+async function undoLastDelete(){if(!undoAction)return;const action=undoAction;undoAction=null;clearTimeout(undoTimer);document.getElementById('undo-toast').style.display='none';try{await action();addLog('استرجع طلباً');}catch(e){toast('تعذر التراجع، حاول مرة أخرى');}}
+
+function renderAdmin(){
+  if(adminPage==='history'){document.getElementById('app-body').innerHTML=renderHistoryPage();return;}
+  const r=getR();if(!r){document.getElementById('app-body').innerHTML='<div style="text-align:center;padding:50px;color:var(--gray-400)">اختار مطعم أو أضف جديد</div>';return;}
+  document.getElementById('app-body').innerHTML=`<div class="rest-bar"><span class="rest-emoji">${r.emoji}</span><input class="rest-name-input" data-fk="rname" value="${esc(r.name)}" onchange="renameR('${r.id}',this.value)"/><button class="btn-del-rest" onclick="deleteR('${r.id}')">🗑️ حذف</button></div>
+  ${todayRollBanner(r)}<div class="admin-layout"><div class="admin-main"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:1rem;font-weight:800">الأشخاص (${r.people?.length||0})</span><button class="btn btn-primary" onclick="addPerson()">+ إضافة</button></div><div class="grid-people">${renderPCards(r)}</div></div>
+  <div class="admin-side">${renderWhatsAppSCard(r)}${renderMenuSCard(r)}${renderCalcSCard(r)}${renderSummarySCard(r)}${renderLogSCard()}</div></div>`;
+}
+function renderPCards(r){return(r.people||[]).map(p=>{const total=calcT(p,r.deliveryFee,r.menu),paid=parseFloat(p.amountPaid)||0,diff=paid-total,isA=activePerson===p.id,mine=p.name===currentUser;const orders=!(p.orders?.length)?`<div class="empty-msg">لا يوجد طلبات</div>`:(p.orders||[]).map(o=>`<div class="orow"><span style="font-weight:700">${esc(o.name)}${typeTxt(o.type)} ×${o.quantity}</span>${noteHtml(o)}${noteEditButton(r.id,p.id,o)}<div style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--gray-400)">${(priceForOrder(o,r.menu)*o.quantity).toFixed(1)}ج</span><button class="icon-btn" style="color:#ef4444;padding:1px" onclick="rmOrder('${r.id}','${p.id}','${o.orderId}',event)">✕</button></div></div>`).join('');
+return`<div class="pcard ${isA?'active':''} ${mine?'mine':''}" onclick="selPerson('${p.id}')"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><div><input class="pname-input" data-fk="pname-${p.id}" value="${esc(p.name)}" onclick="event.stopPropagation()" onchange="renameP('${r.id}','${p.id}',this.value)"/>${mine?'<div style="font-size:9px;color:#22c55e;font-weight:700">★ أنت</div>':''}${draftBadge(r.id,p.id)}</div><button class="icon-btn" style="color:var(--gray-400)" onclick="delP('${r.id}','${p.id}',event)">🗑️</button></div>
+ ${p.lastEditedBy?`<div style="font-size:9px;color:var(--gray-400);margin-bottom:5px">عدّل: <b style="color:var(--amber)">${esc(p.lastEditedBy)}</b> ${p.lastEditedAt||''}</div>`:''}
+<div class="orders-wrap">${orders}</div>
+ <div><div class="fin-line"><span class="fin-lbl">المطلوب</span><span style="font-weight:700;font-size:12px">${total.toFixed(2)} ج</span></div><div class="fin-line"><span class="fin-lbl">المدفوع</span><input class="paid-field" data-fk="paid-${p.id}" type="number" value="${p.amountPaid}" placeholder="0" onclick="event.stopPropagation()" onchange="setPaid('${r.id}','${p.id}',this.value)"/></div><div class="fin-line"><span class="fin-lbl">حالة الدفع</span><select class="paid-field" style="width:104px" onclick="event.stopPropagation()" onchange="setPaymentStatus('${r.id}','${p.id}',this.value)"><option value="unpaid" ${derivedPaymentStatus(p,total)==='unpaid'?'selected':''}>لم يدفع</option><option value="partial" ${derivedPaymentStatus(p,total)==='partial'?'selected':''}>دفع جزئي</option><option value="paid" ${derivedPaymentStatus(p,total)==='paid'?'selected':''}>مدفوع</option><option value="credit" ${derivedPaymentStatus(p,total)==='credit'?'selected':''}>له رصيد</option></select></div><div class="fin-diff"><span style="font-size:11px">${diff>=0?'له':'عليه'}</span><span style="color:${diff>=0?'var(--green)':'var(--red)'}">${Math.abs(diff).toFixed(2)} ج</span></div><div class="fin-line" style="margin-top:8px"><span class="fin-lbl">رصيد محفوظ<br><small style="font-weight:400">+ له / - عليه</small></span><input class="balance-field" data-fk="bal-${p.id}" type="number" value="${p.savedBalance??''}" placeholder="مثال -50" onclick="event.stopPropagation()" onchange="setSavedBalance('${r.id}','${p.id}',this.value)"/></div></div></div>`;}).join('');}
+function renderMenuSCard(r){const items=(r.menu||[]).slice().sort((a,b)=>a.name.localeCompare(b.name));return`<div class="scard"><div class="scard-title">🍽️ القائمة<div style="display:flex;gap:4px"><button class="icon-btn" onclick="openRatingsModal()">⭐</button><button class="icon-btn" onclick="openEditMenu('${r.id}')">✏️</button></div></div><div class="search-box"><input class="search-input" type="text" placeholder="ابحث..." id="asearch-${r.id}" data-fk="asearch" oninput="filterAdminMenu('${r.id}')"/><div class="search-icon"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div></div>${adminTargetHint(r)}<div style="max-height:300px;overflow-y:auto" id="amenu-${r.id}">${renderAdminItems(items,r.id)}</div></div>`;}
+function renderAdminItems(items,rId){return items.map(item=>{const{avg,count}=getAvg(item.id),my=getMyRating(item.id);const avgD=count>0?`<span class="star-avg">${avg.toFixed(1)}★</span>`:'';const starsD=[1,2,3,4,5].map(i=>`<span class="star ${my>=i?'lit':''}" onclick="event.stopPropagation();rateItem(${jsAttr(item.id)},${jsAttr(item.name)},${i})">★</span>`).join('');return`<div class="admin-menu-row"><div><div style="font-weight:700;font-size:12px">${esc(item.name)}</div><div style="font-size:10px;color:var(--gray-400)">${item.shamiPrice?`بلدي ${item.price}ج · شامي ${item.shamiPrice}ج`:`${item.price}ج`}</div><div class="stars-row">${avgD}${starsD}</div></div><div style="display:flex;gap:3px">${item.shamiPrice?`<button class="btn-b" onclick="addO('${rId}','${item.id}','baladi')">بلدي</button><button class="btn-s" onclick="addO('${rId}','${item.id}','shami')">شامي</button>`:`<button class="btn-add" onclick="addO('${rId}','${item.id}','regular')"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>`}</div></div>`;}).join('');}
+function filterAdminMenu(rId){const r=state.restaurants.find(x=>x.id===rId);if(!r)return;const items=filterMenuItems(r.menu,document.getElementById(`asearch-${rId}`)?.value||'','');const el=document.getElementById(`amenu-${rId}`);if(el)el.innerHTML=items.length?renderAdminItems(items,rId):'<div class="empty-msg">مفيش نتائج</div>';}
+function adminTargetHint(r){const p=r.people?.find(x=>x.id===activePerson);return p?`<div class="target-hint on"><span>بتضيف طلبات لـ <b>${esc(p.name)}</b></span><button class="icon-btn" onclick="selPerson('${p.id}')" aria-label="إلغاء الاختيار">✕</button></div>`:`<div class="target-hint"><span>👈 اختار شخص من الكروت الأول، وبعدين اضغط على الصنف</span></div>`;}
+function renderCalcSCard(r){const bill=(r.people||[]).reduce((s,p)=>s+calcT(p,r.deliveryFee,r.menu),0);const paid=(r.people||[]).reduce((s,p)=>s+(parseFloat(p.amountPaid)||0),0);const diff=paid-bill;return`<div class="scard"><div class="scard-title">💰 الحسابات</div><div class="calc-row"><span class="calc-lbl">توصيل/شخص:</span><input class="deliv-input" data-fk="deliv" type="number" value="${r.deliveryFee}" onchange="setDeliv('${r.id}',this.value)"/></div><div class="calc-total"><span>الفاتورة</span><span>${bill.toFixed(2)} ج</span></div><div class="calc-total" style="color:var(--green)"><span>المحصل</span><span>${paid.toFixed(2)} ج</span></div><div class="calc-grand"><span>الفرق</span><span style="color:${diff>=0?'var(--green)':'var(--red)'}">${diff.toFixed(2)} ج</span></div><button class="btn-red" onclick="clearOrders('${r.id}')">🗑️ مسح كل الطلبات</button></div>`;}
+function renderSummarySCard(r){const sum={};(r.people||[]).forEach(p=>(p.orders||[]).forEach(o=>{const k=`${o.menuItemId}-${o.type}-${o.note||''}`;if(!sum[k])sum[k]={name:o.name,qty:0,type:o.type==='baladi'?'بلدي':o.type==='shami'?'شامي':'',note:o.note||'',price:priceForOrder(o,r.menu)};sum[k].qty+=o.quantity;}));const arr=Object.values(sum).sort((a,b)=>b.qty-a.qty);return`<div class="scard"><div class="scard-title">📋 كشف الطلبات<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap"><button class="btn btn-primary" style="font-size:10px;padding:5px 8px" onclick="copySummary('${r.id}')">ملخص بدون أسعار</button><button class="btn btn-green" style="font-size:10px;padding:5px 8px" onclick="sendWhatsAppOrder('${r.id}')">واتساب</button></div></div><div style="max-height:180px;overflow-y:auto">${arr.length?arr.map(i=>`<div class="summary-row"><div><div style="font-weight:700;font-size:12px">${esc(i.name)}</div>${i.type?`<div style="font-size:10px;color:var(--amber-dark)">${i.type}</div>`:''}${i.note?`<div class="order-note-text">ملاحظة: ${esc(i.note)}</div>`:''}</div><div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;color:var(--gray-400)">${(i.price*i.qty).toFixed(0)}ج</span><span class="summary-qty">${i.qty}</span></div></div>`).join(''):`<div class="empty-msg">لا يوجد طلبات</div>`}</div></div>`;}
+function renderLogSCard(){const log=state.activityLog||[];return`<div class="scard"><div class="scard-title">📜 سجل الأنشطة <span style="font-size:10px;color:var(--gray-400)">${log.length?'('+log.length+')':''}</span></div><div style="max-height:200px;overflow-y:auto" id="log-inner">${log.length?log.slice(0,40).map(l=>`<div class="log-row"><div class="log-av">${ini(l.user)}</div><div><div class="log-txt"><strong>${esc(l.user)}</strong> ${esc(l.action)}${l.extra?` <span style="color:var(--gray-400)">${esc(l.extra)}</span>`:''}</div><div class="log-time">${l.time||''}</div></div></div>`).join(''):`<div class="empty-msg">لا يوجد أنشطة</div>`}</div></div>`;}
+
+// ===== ADMIN ACTIONS =====
+function selPerson(id){activePerson=activePerson===id?null:id;renderAll();}
+async function addPerson(){const r=getR();if(!r)return;const pid=uuid();await fbWrite(`restaurants/${r.id}/people/${pid}`,{id:pid,name:'شخص جديد',orders:{},amountPaid:'',savedBalance:'',paymentStatus:'unpaid',paymentUpdatedAt:''});addLog('أضاف شخصاً');}
+async function delP(rId,pId,e){e.stopPropagation();const r=state.restaurants.find(r=>r.id===rId),p=r?.people?.find(p=>p.id===pId);if(!p||!confirm(`حذف ${p.name}؟`))return;await fbDel(`restaurants/${rId}/people/${pId}`);addLog('حذف',p.name);if(activePerson===pId)activePerson=null;}
+async function renameP(rId,pId,val){const r=state.restaurants.find(r=>r.id===rId),p=r?.people?.find(p=>p.id===pId);if(p&&p.name!==val){addLog(`غيّر "${p.name}" إلى`,val);await fbPatch(`restaurants/${rId}/people/${pId}`,{name:val,lastEditedBy:currentUser,lastEditedAt:tnow()});}}
+async function setPaid(rId,pId,val){const r=state.restaurants.find(r=>r.id===rId),p=r?.people?.find(p=>p.id===pId);if(p){const status=derivedPaymentStatus({...p,amountPaid:val,paymentStatus:''},calcT(p,r.deliveryFee,r.menu));addLog(`سجّل دفع ${val}ج لـ`,p.name);await fbPatch(`restaurants/${rId}/people/${pId}`,{amountPaid:val,paymentStatus:status,paymentUpdatedAt:Date.now(),lastEditedBy:currentUser,lastEditedAt:tnow()});}}
+async function setPaymentStatus(rId,pId,status){const r=state.restaurants.find(r=>r.id===rId),p=r?.people?.find(p=>p.id===pId);if(!p)return;await fbPatch(`restaurants/${rId}/people/${pId}`,{paymentStatus:status,paymentUpdatedAt:Date.now(),lastEditedBy:currentUser,lastEditedAt:tnow()});addLog(`غيّر حالة الدفع إلى ${paymentStatusTxt(status)} لـ`,p.name);}
+async function setSavedBalance(rId,pId,val){const r=state.restaurants.find(r=>r.id===rId),p=r?.people?.find(p=>p.id===pId);if(!p)return;const clean=String(val).trim();if(clean!==''&&!Number.isFinite(Number(clean)))return toast('اكتب رقمًا صحيحًا مثل -50 أو 50');addLog(`حفظ رصيد ${clean||0}ج لـ`,p.name);await fbPatch(`restaurants/${rId}/people/${pId}`,{savedBalance:clean,lastEditedBy:currentUser,lastEditedAt:tnow()});}
+async function setDeliv(rId,val){addLog(`غيّر التوصيل إلى ${val}ج`);await fbPatch(`restaurants/${rId}`,{deliveryFee:parseFloat(val)||0});}
+async function addO(rId,menuId,type,note=''){if(!activePerson)return toast('اختر شخصاً أولاً!');const r=state.restaurants.find(r=>r.id===rId),p=r?.people?.find(p=>p.id===activePerson),item=r?.menu?.find(i=>i.id===menuId);if(!p||!item)return;const price=type==='shami'?(item.shamiPrice||item.price):item.price;const now=Date.now(),today=dnow(),ex=(p.orders||[]).find(o=>o.menuItemId===menuId&&o.type===type&&(o.note||'')===note);if(ex)await fbPatch(`restaurants/${rId}/people/${p.id}/orders/${ex.orderId}`,{quantity:ex.quantity+1,orderedAt:now,orderDate:today});else{const oid=uuid();await fbWrite(`restaurants/${rId}/people/${p.id}/orders/${oid}`,{orderId:oid,menuItemId:menuId,name:item.name,price,quantity:1,type,note,addedBy:currentUser,orderedAt:now,orderDate:today});}await fbPatch(`restaurants/${rId}/people/${p.id}`,{lastEditedBy:currentUser,lastEditedAt:tnow()});addLog(`طلب ${item.name}${typeTxt(type)}${note?' — '+note:''} لـ`,p.name);}
+async function rmOrder(rId,pId,orderId,e){e.stopPropagation();const r=state.restaurants.find(x=>x.id===rId),p=r?.people?.find(x=>x.id===pId),order=p?.orders?.find(x=>x.orderId===orderId);if(!order)return;await fbDel(`restaurants/${rId}/people/${pId}/orders/${orderId}`);showUndo('تم حذف الطلب',()=>fbWrite(`restaurants/${rId}/people/${pId}/orders/${orderId}`,order));addLog('شطب طلب');}
+// بيمسح الطلبات + يصفّر "المدفوع" وحالة الدفع لكل شخص (الرصيد المحفوظ مبيتمسحش لأنه حساب مُرحّل)
+async function clearOrders(rId){const r=state.restaurants.find(r=>r.id===rId);if(!r)return;const count=(r.people||[]).reduce((s,p)=>s+(p.orders?.length||0),0),paidCnt=(r.people||[]).filter(p=>parseFloat(p.amountPaid)||p.paymentStatus&&p.paymentStatus!=='unpaid').length;if(!count&&!paidCnt)return toast('مفيش حاجة تتمسح');if(!confirm(`مسح كل الطلبات (${count}) في ${r.name} وتصفير خانة المدفوع؟\nالرصيد المحفوظ مش هيتمسح.`))return;const patch={},undo={};for(const p of r.people||[]){undo[`people/${p.id}/orders`]=p.orders?.length?Object.fromEntries(p.orders.map(o=>[o.orderId,o])):null;undo[`people/${p.id}/amountPaid`]=p.amountPaid??'';undo[`people/${p.id}/paymentStatus`]=p.paymentStatus||'unpaid';patch[`people/${p.id}/orders`]=null;patch[`people/${p.id}/amountPaid`]='';patch[`people/${p.id}/paymentStatus`]='unpaid';patch[`people/${p.id}/paymentUpdatedAt`]=Date.now();}await fbPatch(`restaurants/${rId}`,patch);showUndo(`تم مسح ${count} طلب وتصفير المدفوع`,()=>fbPatch(`restaurants/${rId}`,undo));addLog('مسح كل الطلبات وصفّر المدفوع',r.name);}
+function copySummary(rId){const r=state.restaurants.find(r=>r.id===rId);if(!r)return;const sum={};(r.people||[]).forEach(p=>(p.orders||[]).forEach(o=>{const k=`${o.menuItemId}-${o.type}-${o.note||''}`;if(!sum[k])sum[k]={name:o.name,qty:0,type:o.type==='baladi'?'بلدي':o.type==='shami'?'شامي':'',note:o.note||''};sum[k].qty+=o.quantity;}));const arr=Object.values(sum).sort((a,b)=>b.qty-a.qty);navigator.clipboard.writeText(`طلبات ${r.name}:\n${arr.map(i=>`- ${i.name}${i.type?' ('+i.type+')':''} × ${i.qty}${i.note?' — ملاحظة: '+i.note:''}`).join('\n')}`).then(()=>toast('تم نسخ ملخص الطلب بدون أسعار ✓')).catch(()=>toast('تعذر النسخ، حاول مرة أخرى'))}
+function normalizePhone(v){let d=String(v||'').replace(/\D/g,'');if(d.startsWith('00'))d=d.slice(2);if(d.startsWith('0'))d='20'+d.slice(1);return d;}
+function buildOrderMessage(r,mode='summary'){const sum={},people=[],dates=[];(r.people||[]).forEach(p=>{const lines=[];(p.orders||[]).forEach(o=>{const note=o.note||'';const k=`${o.menuItemId}-${o.type}-${note}`;if(!sum[k])sum[k]={name:o.name,qty:0,type:o.type==='baladi'?'بلدي':o.type==='shami'?'شامي':'',note};sum[k].qty+=o.quantity;const noteText=note?` — ملاحظة: ${note}`:'';lines.push(`• ${o.name}${typeTxt(o.type)} × ${o.quantity}${noteText}`);if(orderDateLabel(o))dates.push({value:orderDateLabel(o),time:o.orderedAt||0});});if(lines.length)people.push({name:p.name,lines:lines.sort((a,b)=>a.localeCompare(b,'ar'))});});people.sort((a,b)=>a.name.localeCompare(b.name,'ar'));const arr=Object.values(sum).sort((a,b)=>b.qty-a.qty);const total=arr.reduce((s,i)=>s+i.qty,0);const date=(dates.sort((a,b)=>b.time-a.time)[0]?.value)||dnow();const body=mode==='people'?people.map(p=>`👤 ${p.name}\n${p.lines.join('\n')}`).join('\n\n'):arr.map(i=>`• ${i.name}${i.type?' ('+i.type+')':''} × ${i.qty}${i.note?` — ملاحظة: ${i.note}`:''}`).join('\n');return{arr,people,total,date,text:`🍳 طلب فطار — ${r.name}\n📅 ${date}\n\n${body}\n\n👥 ${people.length} أشخاص · 🍽️ ${total} صنف`};}
+function sendWhatsAppOrder(rId,mode='summary'){const r=state.restaurants.find(r=>r.id===rId);if(!r)return false;const order=buildOrderMessage(r,mode);if(!order.arr.length){toast('لا يوجد طلبات لإرسالها');return false;}const phone=normalizePhone(r.whatsapp)||DEFAULT_WHATSAPP;const win=window.open(`https://wa.me/${phone}?text=${encodeURIComponent(order.text)}`,'_blank','noopener,noreferrer');if(!win)toast('المتصفح منع فتح واتساب. اسمح بالنوافذ المنبثقة وحاول تاني.');return true;}
+async function sendBreakfastReady(rId,mode='summary'){const r=state.restaurants.find(r=>r.id===rId);if(!r)return;const order=buildOrderMessage(r,mode);if(!order.arr.length)return toast('لا يوجد طلبات لإرسالها');const opened=sendWhatsAppOrder(rId,mode);try{await fbPatch(`restaurants/${rId}`,{lastSentAt:Date.now(),lastSentText:order.text});addLog('أرسل طلب الفطار واتساب',r.name);postSystem('📲 الأدمن بعت الطلب للمطعم — الفطار في السكة 🛵');}catch(e){console.warn(e);}return opened;}
+function openWhatsAppModal(rId){const r=state.restaurants.find(x=>x.id===rId);if(!r)return;const s=buildOrderMessage(r,'summary'),p=buildOrderMessage(r,'people');if(!s.arr.length)return toast('لا يوجد طلبات لإرسالها');document.getElementById('wa-summary-preview').textContent=s.text;document.getElementById('wa-people-preview').textContent=p.text;const m=document.getElementById('whatsapp-modal');m.dataset.rest=rId;m.style.display='flex';}
+function sendWhatsAppChoice(mode){const rId=document.getElementById('whatsapp-modal').dataset.rest;closeM('whatsapp-modal');sendBreakfastReady(rId,mode);}
+async function setWhatsapp(rId,val){const phone=normalizePhone(val);if(phone.length<10)return toast('رقم الواتساب غير صحيح');await fbPatch(`restaurants/${rId}`,{whatsapp:phone});addLog('عدّل رقم واتساب المطعم',phone);}
+function renderWhatsAppSCard(r){const sent=r.lastSentAt?new Date(r.lastSentAt).toLocaleString('ar-EG'):'';return`<div class="scard"><div class="scard-title">📲 إرسال الطلب</div><div class="calc-row"><span class="calc-lbl">رقم واتساب المطعم:</span><input class="edit-field-sm" style="width:130px" data-fk="wa" type="tel" value="${esc(r.whatsapp||DEFAULT_WHATSAPP)}" onchange="setWhatsapp('${r.id}',this.value)"/></div><button class="btn btn-amber" style="width:100%;justify-content:center;padding:11px;margin-top:9px;font-size:12px" onclick="openWhatsAppModal('${r.id}')">✅ تم تجهيز الفطار — إرسال واتساب</button><button class="btn btn-primary" style="width:100%;justify-content:center;padding:10px;margin-top:6px;font-size:12px" onclick="confirmOrderSheet('${r.id}')">📚 تأكيد الأوردر وحفظ الشيت</button><div style="font-size:10px;color:var(--gray-400);margin-top:7px;text-align:center">${sent?'آخر إرسال: '+sent:'يجهّز رسالة الطلب ويفتح واتساب مباشرة'}</div></div>`;}
+
+// ===== RESTAURANTS =====
+async function renameR(rId,val){addLog(`غيّر اسم المطعم إلى`,val);await fbPatch(`restaurants/${rId}`,{name:val});}
+async function deleteR(rId){if(state.restaurants.length<=1)return toast('لا يمكن حذف آخر مطعم');const r=state.restaurants.find(r=>r.id===rId);if(!r)return;if(!confirm(`حذف مطعم "${r.name}" بكل الطلبات والقائمة؟\nالخطوة دي مش هينفع ترجع فيها.`))return;addLog('حذف مطعم',r.name);await fbDel(`restaurants/${rId}`);activeRestId=state.restaurants.find(r=>r.id!==rId)?.id||null;}
+function openNewRest(){selEmoji2='🍳';document.getElementById('new-rest-name').value='';document.getElementById('emoji-grid').innerHTML=EMOJIS.map(e=>`<div class="emoji-opt ${e===selEmoji2?'sel':''}" onclick="pickEmoji(this,'${e}')">${e}</div>`).join('');document.getElementById('new-rest-modal').style.display='flex';}
+function pickEmoji(el,e){selEmoji2=e;document.querySelectorAll('.emoji-opt').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');}
+async function confirmNewRest(){const name=document.getElementById('new-rest-name').value.trim();if(!name)return toast('ادخل الاسم!');const rid=uuid();const names=[...new Set([...(state.restaurants||[]).flatMap(r=>(r.people||[]).map(p=>p.name)),...PEOPLE_NAMES,...(!isAdmin&&currentUser?[currentUser]:[])])];await fbWrite(`restaurants/${rid}`,{id:rid,name,emoji:selEmoji2,deliveryFee:1,whatsapp:DEFAULT_WHATSAPP,menu:Object.fromEntries(DEFAULT_MENU.map(i=>[i.id,i])),people:Object.fromEntries(names.map(n=>[userKey(n),personRecord(n)]))});activeRestId=rid;addLog('أضاف مطعم',name);closeM('new-rest-modal');}
+
+// ===== EDIT MENU =====
+let editedIds=new Set(),newIds=new Set();
+function openEditMenu(rId){editingRestId=rId;const r=state.restaurants.find(r=>r.id===rId);tempMenu=JSON.parse(JSON.stringify(r?.menu||[]));editedIds=new Set();newIds=new Set();const s=document.getElementById('edit-menu-search');if(s)s.value='';renderEditBody();document.getElementById('edit-menu-modal').style.display='flex';setTimeout(()=>s?.focus(),60);}
+function renderEditBody(){
+  const q=normAr(document.getElementById('edit-menu-search')?.value||'');
+  const list=tempMenu.filter(i=>!q||normAr(i.name).includes(q)).sort((a,b)=>(newIds.has(b.id)-newIds.has(a.id))||a.name.localeCompare(b.name,'ar'));
+  document.getElementById('edit-menu-meta').innerHTML=`${q?`<b>${list.length}</b> نتيجة من ${tempMenu.length}`:`${tempMenu.length} صنف`}${editedIds.size?` · <span class="edit-dirty">✏️ ${editedIds.size} تعديل لسه متحفظش</span>`:''}`;
+  document.getElementById('edit-menu-body').innerHTML=list.length?`<div class="edit-head"><span>الصنف</span><span>بلدي</span><span>شامي</span><span></span></div>`+list.map(item=>`<div class="edit-row ${editedIds.has(item.id)?'dirty':''} ${newIds.has(item.id)?'new':''}"><input class="edit-field" type="text" value="${esc(item.name)}" onchange="updTmp('${item.id}','name',this.value)"/><input class="edit-field-sm" type="number" step="0.5" value="${item.price??''}" placeholder="بلدي" onchange="updTmp('${item.id}','price',this.value)"/><input class="edit-field-sm" type="number" step="0.5" value="${item.shamiPrice??''}" placeholder="—" onchange="updTmp('${item.id}','shamiPrice',this.value)"/><button class="icon-btn" style="color:var(--red)" title="حذف" onclick="delTmp('${item.id}')">🗑️</button></div>`).join(''):`<div class="empty-msg">مفيش صنف بالاسم ده — تقدر تضيفه من تحت 👇</div>`;
+}
+function updTmp(id,f,v){const i=tempMenu.find(i=>i.id===id);if(!i)return;if(f==='price'||f==='shamiPrice'){const n=v===''?undefined:parseFloat(v);if(f==='price'&&(n==null||isNaN(n)))return toast('السعر البلدي مطلوب');i[f]=n;}else{if(!v.trim())return toast('اسم الصنف مينفعش يبقى فاضي');i[f]=v.trim();}editedIds.add(id);const meta=document.getElementById('edit-menu-meta');if(meta)renderEditMetaOnly();}
+function renderEditMetaOnly(){const q=document.getElementById('edit-menu-search')?.value||'';const n=tempMenu.filter(i=>!normAr(q)||normAr(i.name).includes(normAr(q))).length;document.getElementById('edit-menu-meta').innerHTML=`${q?`<b>${n}</b> نتيجة من ${tempMenu.length}`:`${tempMenu.length} صنف`}${editedIds.size?` · <span class="edit-dirty">✏️ ${editedIds.size} تعديل لسه متحفظش</span>`:''}`;}
+function closeEditMenu(){if(editedIds.size&&!confirm('فيه تعديلات لسه متحفظتش — تقفل من غير حفظ؟'))return;editedIds=new Set();closeM('edit-menu-modal');}
+function delTmp(id){const i=tempMenu.find(x=>x.id===id);if(!i||!confirm(`حذف "${i.name}" من القائمة؟`))return;tempMenu=tempMenu.filter(x=>x.id!==id);editedIds.add(id);renderEditBody();}
+function addMenuItem(){const name=document.getElementById('ni-name').value.trim(),price=parseFloat(document.getElementById('ni-price').value),shami=document.getElementById('ni-shami').value;if(!name||isNaN(price))return toast('ادخل اسم وسعر!');if(tempMenu.some(i=>normAr(i.name)===normAr(name))&&!confirm(`فيه صنف اسمه "${name}" بالفعل، تضيفه تاني؟`))return;const id=uuid();tempMenu.push({id,name,price,shamiPrice:shami?parseFloat(shami):undefined});newIds.add(id);editedIds.add(id);['ni-name','ni-price','ni-shami'].forEach(x=>document.getElementById(x).value='');document.getElementById('edit-menu-search').value='';renderEditBody();document.getElementById('edit-menu-body').scrollTop=0;document.getElementById('ni-name').focus();}
+async function syncOrderPrices(rId,menu){const r=state.restaurants.find(x=>x.id===rId);if(!r)return;const byId=Object.fromEntries(menu.map(i=>[i.id,i]));for(const p of r.people||[]){for(const o of p.orders||[]){const item=byId[o.menuItemId];if(!item)continue;const price=o.type==='shami'?(item.shamiPrice??item.price):item.price;if(Number(o.price)!==Number(price))await fbPatch(`restaurants/${rId}/people/${p.id}/orders/${o.orderId}`,{price});}}}
+async function saveMenuAndClose(){const r=state.restaurants.find(r=>r.id===editingRestId);if(!r)return;await fbWrite(`restaurants/${editingRestId}/menu`,Object.fromEntries(tempMenu.map(i=>[i.id,i])));await syncOrderPrices(editingRestId,tempMenu);addLog('عدّل القائمة والأسعار',r.name);editedIds=new Set();closeM('edit-menu-modal');toast('القائمة اتحفظت ✓');}
+
+// ===== RECEIPTS =====
+function showReceipt(type){const r=getR();if(!r)return;const titles={brief:'🧾 ريسيت مختصر',detailed:'📋 ريسيت مفصل',restaurant:'🍳 ريسيت المطعم'};document.getElementById('receipt-title').textContent=titles[type];document.getElementById('receipt-body').innerHTML=type==='brief'?briefR(r):type==='detailed'?detailR(r):restR(r);document.getElementById('receipt-modal').style.display='flex';}
+function briefR(r){const bill=(r.people||[]).reduce((s,p)=>s+calcT(p,r.deliveryFee,r.menu),0);const paid=(r.people||[]).reduce((s,p)=>s+(parseFloat(p.amountPaid)||0),0);const diff=paid-bill;return`<div class="receipt"><div class="r-head"><span class="emoji">${r.emoji}</span><h2>${esc(r.name)}</h2><p>${restaurantOrderDate(r)} · ${tnow()}</p></div>${(r.people||[]).filter(p=>p.orders?.length).map(p=>{const t=calcT(p,r.deliveryFee,r.menu),pv=parseFloat(p.amountPaid)||0,d=pv-t;return`<div class="r-row"><span>${esc(p.name)}</span><span style="font-weight:700;color:${d>=0?'var(--green)':'var(--red)'}">${t.toFixed(2)} ج ${d>=0?'✅':'⚠️'}</span></div>`;}).join('')}<div class="r-row total"><span>إجمالي الفاتورة</span><span>${bill.toFixed(2)} ج</span></div><div class="r-row" style="font-weight:700;color:var(--green)"><span>إجمالي المحصل</span><span>${paid.toFixed(2)} ج</span></div><div class="r-row grand"><span>الفرق</span><span style="color:${diff>=0?'var(--green)':'var(--red)'}">${diff.toFixed(2)} ج</span></div></div>`;}
+function detailR(r){const bill=(r.people||[]).reduce((s,p)=>s+calcT(p,r.deliveryFee,r.menu),0);return`<div class="receipt"><div class="r-head"><span class="emoji">${r.emoji}</span><h2>${esc(r.name)} — تفصيلي</h2><p>${restaurantOrderDate(r)} · ${tnow()}</p></div>${(r.people||[]).filter(p=>p.orders?.length).map(p=>{const t=calcT(p,r.deliveryFee,r.menu),pv=parseFloat(p.amountPaid)||0,d=pv-t;return`<div class="r-person"><div class="r-person-name"><span>${esc(p.name)}</span><span style="color:${d>=0?'var(--green)':'var(--red)'}">${d>=0?'له':'عليه'} ${Math.abs(d).toFixed(2)} ج</span></div>${(p.orders||[]).map(o=>`<div class="r-item"><span>${esc(o.name)}${typeTxt(o.type)} ×${o.quantity}</span><span>${(priceForOrder(o,r.menu)*o.quantity).toFixed(2)} ج</span></div>`).join('')}<div style="border-top:1px dashed var(--gray-200);margin-top:5px;padding-top:5px;display:flex;justify-content:space-between;font-size:11px;color:var(--gray-400)"><span>توصيل</span><span>${r.deliveryFee} ج</span></div><div style="display:flex;justify-content:space-between;font-weight:800;font-size:13px;margin-top:2px"><span>الإجمالي</span><span>${t.toFixed(2)} ج</span></div>${pv>0?`<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--green)"><span>دفع</span><span>${pv.toFixed(2)} ج</span></div>`:''}</div>`;}).join('')}<div class="r-row grand"><span>إجمالي الفاتورة</span><span>${bill.toFixed(2)} ج</span></div></div>`;}
+function restR(r){const sum={};(r.people||[]).forEach(p=>(p.orders||[]).forEach(o=>{const k=`${o.menuItemId}-${o.type}`;if(!sum[k])sum[k]={name:o.name,qty:0,type:o.type==='baladi'?'بلدي':o.type==='shami'?'شامي':'',price:priceForOrder(o,r.menu)};sum[k].qty+=o.quantity;}));const arr=Object.values(sum).sort((a,b)=>b.qty-a.qty);const foodT=arr.reduce((s,i)=>s+i.price*i.qty,0);const pplCnt=(r.people||[]).filter(p=>p.orders?.length).length;const delivT=pplCnt*r.deliveryFee;return`<div class="receipt"><div class="r-head"><span class="emoji">${r.emoji}</span><h2>${esc(r.name)} — ريسيت المطعم</h2><p>${restaurantOrderDate(r)} · ${tnow()}</p></div><div class="r-section">الأصناف</div>${arr.map(i=>`<div class="r-row"><span>${esc(i.name)}${i.type?' ('+i.type+')':''} × ${i.qty}</span><span style="font-weight:700">${(i.price*i.qty).toFixed(2)} ج</span></div>`).join('')}<div class="r-section">التوصيل</div><div class="r-row"><span>${pplCnt} شخص × ${r.deliveryFee} ج</span><span>${delivT.toFixed(2)} ج</span></div><div class="r-row total"><span>إجمالي الأكل</span><span>${foodT.toFixed(2)} ج</span></div><div class="r-row grand"><span>الإجمالي شامل التوصيل</span><span>${(foodT+delivT).toFixed(2)} ج</span></div></div>`;}
+function copyReceipt(){navigator.clipboard.writeText(document.getElementById('receipt-body').innerText).then(()=>toast('تم نسخ الريسيت ✓')).catch(()=>toast('تعذر النسخ'));}
+
+// ===== AI =====
+
+
+function setHistoryRange(days){historyDays=days;renderAll();}
+async function voidSheet(id){if(!state.orderSheets?.[id])return;await fbPatch(`orderSheets/${id}`,{voided:true,voidedAt:Date.now(),voidedBy:currentUser});addLog('ألغى شيت حسابات');renderAll();}
+async function restoreSheet(id){if(!state.orderSheets?.[id])return;await fbPatch(`orderSheets/${id}`,{voided:false,restoredAt:Date.now(),restoredBy:currentUser});addLog('استرجع شيت حسابات');renderAll();}
+
+// Record collection in Firebase and update the loaded state immediately, so the account closes without waiting for a listener.
+async function markPersonPaid(name){
+  const paidAt=Date.now(),patch={},account={name,total:0,paid:0,lastPaymentAt:paidAt};
+  Object.values(state.orderSheets||{}).forEach(s=>{
+    if(s.voided)return;
+    Object.values(s.people||{}).forEach(p=>{
+      if(p.name!==name)return;
+      const total=Number(p.total)||0;
+      account.total+=total;
+      if((Number(p.amountPaid)||0)<total){
+        p.amountPaid=total;p.paymentStatus='paid';p.paidAt=paidAt;
+        patch[`${s.id}/people/${p.id}/amountPaid`]=total;
+        patch[`${s.id}/people/${p.id}/paymentStatus`]='paid';
+        patch[`${s.id}/people/${p.id}/paidAt`]=paidAt;
+      }
+      account.paid+=Number(p.amountPaid)||0;
+    });
+  });
+  if(!Object.keys(patch).length){renderAll();return;}
+  await fbPatch('orderSheets',patch);
+  await fbPatch(`personAccounts/${encodeURIComponent(name)}`,{...account,updatedAt:paidAt});
+  addLog('سجّل تحصيل حساب',name);
+  renderAll();
+}
+
+let ledgerSearch='';
+function filterLedger(value){ledgerSearch=String(value||'');renderAll();setTimeout(()=>{const el=document.getElementById('ledger-search');if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length);}},0);}
+function exportLedger(){
+  const rows=buildLedgerAccounts().map(a=>[a.name,a.total.toFixed(2),a.paid.toFixed(2),Math.max(0,ledgerNetDue(a)).toFixed(2),a.sheets.length,a.last?new Date(a.last).toLocaleDateString('ar-EG'):'',''+(ledgerNetDue(a)>0?'عليه':ledgerNetDue(a)<0?'له':'مقفل')]);
+  const csv=['الاسم,الإجمالي,المدفوع,المتبقي,عدد الشيتات,آخر شيت,الحالة',...rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','))].join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));a.download='حسابات-الفطار.csv';a.click();URL.revokeObjectURL(a.href);
+}
+function savedBalanceForPerson(name){return state.restaurants.reduce((sum,r)=>sum+(r.people||[]).filter(p=>p.name===name).reduce((n,p)=>n+(parseFloat(p.savedBalance)||0),0),0);}
+function ledgerNetDue(a){return Number(a.netDue??(a.total-a.paid));}
+function buildLedgerAccounts(){
+  const cutoff=historyDays==='all'?0:Date.now()-historyDays*24*60*60*1000,groups={};
+  Object.values(state.orderSheets||{}).filter(s=>!s.voided&&(s.confirmedAt||0)>=cutoff).forEach(s=>Object.values(s.people||{}).forEach(p=>{
+    const key=String(p.name||p.id);if(!groups[key])groups[key]={name:p.name||'بدون اسم',total:0,paid:0,sheets:[],last:0};
+    const a=groups[key],total=Number(p.total)||0,paid=Math.min(Number(p.amountPaid)||0,total);a.total+=total;a.paid+=paid;a.last=Math.max(a.last,Number(s.confirmedAt)||0);a.sheets.push({sheet:s,person:p,due:Math.max(0,total-paid)});
+  }));
+  Object.values(groups).forEach(a=>{a.balance=savedBalanceForPerson(a.name);a.netDue=a.total-a.paid-a.balance;});
+  return Object.values(groups).filter(a=>!ledgerSearch||a.name.toLowerCase().includes(ledgerSearch.toLowerCase())).sort((a,b)=>ledgerNetDue(b)-ledgerNetDue(a)||a.name.localeCompare(b.name,'ar'));
+}
+function ledgerItems(p){return (p.orders||[]).map(o=>`${esc(o.name)}${typeTxt(o.type)} ×${o.quantity}${o.note?` <span class="ledger-note">${esc(o.note)}</span>`:''}`).join('، ')||'لا توجد تفاصيل';}
+function renderHistoryPage(){
+  const accounts=buildLedgerAccounts(),cutoff=historyDays==='all'?0:Date.now()-historyDays*24*60*60*1000;
+  const active=Object.values(state.orderSheets||{}).filter(s=>!s.voided&&(s.confirmedAt||0)>=cutoff),voided=Object.values(state.orderSheets||{}).filter(s=>s.voided&&(s.confirmedAt||0)>=cutoff);
+  const total=accounts.reduce((n,a)=>n+a.total,0),paid=accounts.reduce((n,a)=>n+a.paid,0),due=accounts.reduce((n,a)=>n+Math.max(0,ledgerNetDue(a)),0);
+   const row=a=>{const remaining=ledgerNetDue(a),open=window.ledgerOpen===a.name;return `<tr class="ledger-person-row"><td><div class="ledger-person-name"><span class="ledger-avatar">${esc((a.name||'?').trim().slice(0,1))}</span>${esc(a.name)}</div></td><td class="ledger-money">${a.total.toFixed(2)} ج</td><td class="ledger-paid">${a.paid.toFixed(2)} ج</td><td class="${remaining>0?'ledger-due':'ledger-paid'}">${remaining>0?remaining.toFixed(2)+' ج':remaining<0?'له '+Math.abs(remaining).toFixed(2)+' ج':'0.00 ج'}</td><td>${a.sheets.length}</td><td>${a.last?new Date(a.last).toLocaleDateString('ar-EG'):'—'}</td><td><span class="ledger-status ${remaining>0?'open':'closed'}">${remaining>0?'عليه '+remaining.toFixed(2)+' ج':remaining<0?'له '+Math.abs(remaining).toFixed(2)+' ج':'مقفول'}</span></td><td><button class="ledger-row-btn" onclick="toggleLedgerPerson(${jsAttr(a.name)})">${open?'إخفاء':'كشف الحساب'}</button>${remaining>0?`<button class="ledger-row-btn" style="margin-right:4px;color:#047857" onclick="markPersonPaid(${jsAttr(a.name)})">تحصيل</button>`:''}</td></tr>${open?`<tr class="ledger-detail-row"><td colspan="8"><div class="ledger-detail"><div class="ledger-detail-head"><span>كشف ${esc(a.name)} — ${a.sheets.length} شيت</span><span class="ledger-detail-actions"><button class="ledger-del-btn" onclick="deletePersonLedger(${jsAttr(a.name)})">🗑️ مسح كشف ${esc(a.name)} كله</button><strong>${remaining>0?'المتبقي: '+remaining.toFixed(2)+' ج':remaining<0?'له رصيد: '+Math.abs(remaining).toFixed(2)+' ج':'الحساب مقفول'}</strong></span></div><table class="ledger-subtable"><thead><tr><th>التاريخ</th><th>المطعم</th><th>الطلبات</th><th>الإجمالي</th><th>المدفوع</th><th>المتبقي</th><th>الحالة</th><th></th></tr></thead><tbody>${a.sheets.sort((x,y)=>(y.sheet.confirmedAt||0)-(x.sheet.confirmedAt||0)).map(x=>`<tr><td>${esc(x.sheet.orderDate||'—')}</td><td>${esc(x.sheet.restaurantName||'—')}</td><td class="items-cell">${ledgerItems(x.person)}</td><td>${Number(x.person.total||0).toFixed(2)} ج</td><td><input class="ledger-sheet-paid-input" data-fk="lsp-${x.sheet.id}-${x.person.id}" type="number" min="0" max="${Number(x.person.total||0)}" step="0.01" value="${Number(x.person.amountPaid||0).toFixed(2)}" onchange="setSheetPaid('${x.sheet.id}','${x.person.id}',this.value)"></td><td class="${x.due?'ledger-due':'ledger-paid'}">${x.due.toFixed(2)} ج</td><td>${x.due?'متأخر':'مدفوع'}</td><td><button class="ledger-del-btn" title="حذف الصف ده" onclick="deleteSheetPerson('${x.sheet.id}','${x.person.id}')">🗑️ حذف</button></td></tr>`).join('')}</tbody></table></div></td></tr>`:''}`;};
+  return `<div class="ledger-shell"><div class="ledger-toolbar"><div class="ledger-title"><div class="ledger-title-mark">▦</div><div><h2>دفتر الحسابات</h2><p>كشف ذكي تراكمي — كل صف يمثل شخصًا واحدًا</p></div></div><div class="ledger-actions"><input id="ledger-search" class="ledger-search" value="${esc(ledgerSearch)}" placeholder="ابحث باسم الشخص..." oninput="filterLedger(this.value)"><div class="ledger-range"><button class="${historyDays===3?'active':''}" onclick="setHistoryRange(3)">3 أيام</button><button class="${historyDays===7?'active':''}" onclick="setHistoryRange(7)">7 أيام</button><button class="${historyDays==='all'?'active':''}" onclick="setHistoryRange('all')">الكل</button></div><button class="btn btn-primary" onclick="exportLedger()">↓ تصدير Excel</button><button class="btn btn-amber" onclick="backToOrders()">الطلبات</button></div></div><div class="ledger-kpis"><div class="ledger-kpi"><label>عدد الأشخاص</label><strong>${accounts.length}</strong></div><div class="ledger-kpi"><label>إجمالي الحسابات</label><strong>${total.toFixed(2)} ج</strong></div><div class="ledger-kpi"><label>إجمالي المدفوع</label><strong>${paid.toFixed(2)} ج</strong></div><div class="ledger-kpi danger"><label>إجمالي المتبقي</label><strong>${due.toFixed(2)} ج</strong></div></div><div class="ledger-table-wrap"><table class="ledger-table"><thead><tr><th>الشخص</th><th>إجمالي الحساب</th><th>المدفوع</th><th>المتبقي</th><th>الشيتات</th><th>آخر شيت</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody>${accounts.length?accounts.map(row).join(''):`<tr><td colspan="8" class="ledger-empty">لا توجد حسابات في الفترة المحددة</td></tr>`}</tbody></table></div>${voided.length?`<div class="dash-card" style="margin-top:14px"><div class="dash-card-title"><span>الشيتات الملغاة</span><span>${voided.length}</span></div><div class="ledger-table-wrap"><table class="ledger-table"><thead><tr><th>المطعم</th><th>التاريخ</th><th>الإجمالي</th><th>الإجراء</th></tr></thead><tbody>${voided.map(s=>`<tr class="ledger-voided"><td>${esc(s.restaurantName||'—')}</td><td>${esc(s.orderDate||'—')}</td><td>${Number(s.total||0).toFixed(2)} ج</td><td><button class="ledger-row-btn" onclick="restoreSheet('${s.id}')">استرجاع الشيت</button></td></tr>`).join('')}</tbody></table></div></div>`:''}</div>`;
+}
+function toggleLedgerPerson(name){window.ledgerOpen=window.ledgerOpen===name?'':name;renderAll();}
+function getPersonLedger(name,currentRestaurant,currentPerson){
+  const today=dnow(),result={total:0,paid:0,sheets:[]};let skippedLiveSheet=false;
+  const orderSig=p=>(p?.orders||[]).map(o=>`${o.menuItemId||o.name}|${o.type||''}|${o.quantity}|${o.note||''}`).sort().join('~');
+  const liveTotal=currentPerson&&currentRestaurant?calcT(currentPerson,currentRestaurant.deliveryFee,currentRestaurant.menu):0,liveSig=orderSig(currentPerson);
+  Object.values(state.orderSheets||{}).forEach(s=>{
+    if(s.voided)return;
+    const p=Object.values(s.people||{}).find(x=>x.name===name);if(!p)return;
+    // Exclude only the confirmed snapshot that exactly matches the current live order, not every sheet from today.
+    if(!skippedLiveSheet&&currentRestaurant&&currentPerson&&s.restaurantId===currentRestaurant.id&&s.orderDate===today&&Math.abs((Number(p.total)||0)-liveTotal)<.01&&orderSig(p)===liveSig){skippedLiveSheet=true;return;}
+    const total=Number(p.total)||0,paid=Math.min(Number(p.amountPaid)||0,total);result.total+=total;result.paid+=paid;result.sheets.push({sheet:s,total,paid,due:Math.max(0,total-paid)});
+  });
+  return result;
+}
+function renderPersonalLedgerCard(ledger,currentTotal,currentPaid,savedBalance){
+  const currentDue=Math.max(0,currentTotal-Math.min(currentPaid,currentTotal)),oldDue=ledger.sheets.reduce((n,x)=>n+x.due,0),oldCount=ledger.sheets.filter(x=>x.due>0).length,balance=Number.isFinite(savedBalance)?savedBalance:0,oldNetDue=oldDue-balance;
+  const reminder=(kind,label,sub,amount)=>`<div class="personal-reminder ${kind}"><div><div class="personal-reminder-label">${label}</div><div class="personal-reminder-sub">${sub}</div></div>${amount>0?`<div class="personal-reminder-amount">عليه ${amount.toFixed(2)} ج</div>`:amount<0?`<div class="personal-reminder-amount clear">له ${Math.abs(amount).toFixed(2)} ج</div>`:''}</div>`;
+  const currentBox=currentDue!==0?reminder('current','🧾 حساب الأوردر الحالي','طلبات النهارده فقط',currentDue):'';
+  const oldBox=oldNetDue>0?reminder('old','💰 الرصيد المحفوظ',oldCount?`${oldCount} شيت سابق`:'الحساب السابق',oldNetDue):oldNetDue<0?reminder('old','💰 الرصيد المحفوظ','رصيد محفوظ',oldNetDue):'';
+  return `${currentBox}${oldBox}`;
+}
+</script>
+<script>
+// Keep the payment card minimal: QR only, without status, URL, or action buttons.
+function renderPaymentCard(r,me,total){return `<div class="payment-card"><h3>💳 دفع الحساب عبر InstaPay</h3><p>امسح الكود من تطبيق InstaPay مباشرة</p><img class="payment-qr" src="${INSTAPAY_QR}" alt="QR code InstaPay" loading="lazy"/></div>`;}
+async function setSheetPaid(sheetId,personId,value){
+  const sheet=state.orderSheets?.[sheetId],person=sheet?.people?.[personId];if(!person)return;
+  const total=Number(person.total)||0,paid=Math.max(0,Math.min(total,Number(value)||0)),status=paid>=total?'paid':paid>0?'partial':'unpaid';
+  person.amountPaid=paid;person.paymentStatus=status;
+  await fbPatch(`orderSheets/${sheetId}/people/${personId}`,{amountPaid:paid,paymentStatus:status,paymentUpdatedAt:Date.now()});
+  addLog(`عدّل مدفوع شيت إلى ${paid.toFixed(2)}ج لـ`,person.name);renderAll();
+}
+// ================= السلة (مسودة) + تأكيد الطلب =================
+// طلبات اليوزر بتتحفظ في drafts/{مطعم}/{شخص} ومبتوصلش للأدمن غير لما يدوس "تأكيد"
+const draftPath=(rId,pId,oid)=>`drafts/${rId}/${pId}`+(oid?`/${oid}`:'');
+const sameOrder=(a,b)=>a.menuItemId===b.menuItemId&&a.type===b.type&&(a.note||'')===(b.note||'');
+function myDraft(rId,pId){return Object.values(state.drafts?.[rId]?.[pId]||{}).filter(o=>o&&o.orderId).sort((a,b)=>(a.orderedAt||0)-(b.orderedAt||0));}
+function findDraft(rId,pId,oid){return state.drafts?.[rId]?.[pId]?.[oid];}
+function draftTotal(d,menu){return d.reduce((n,o)=>n+priceForOrder(o,menu)*(Number(o.quantity)||0),0);}
+async function addMyOrder(rId,pId,menuId,type,note=''){const r=state.restaurants.find(x=>x.id===rId),item=r?.menu?.find(i=>i.id===menuId);if(!item||!pId)return;const price=type==='shami'?(item.shamiPrice||item.price):item.price;const ex=myDraft(rId,pId).find(o=>sameOrder(o,{menuItemId:menuId,type,note}));if(ex)await fbPatch(draftPath(rId,pId,ex.orderId),{quantity:(Number(ex.quantity)||0)+1});else{const oid=uuid();await fbWrite(draftPath(rId,pId,oid),{orderId:oid,menuItemId:menuId,name:item.name,price,quantity:1,type,note,addedBy:currentUser,orderedAt:Date.now()});}}
+async function incMyOrder(rId,pId,oid){const o=findDraft(rId,pId,oid);if(o)await fbPatch(draftPath(rId,pId,oid),{quantity:(Number(o.quantity)||0)+1});}
+async function decMyOrder(rId,pId,oid){const o=findDraft(rId,pId,oid);if(!o)return;if((Number(o.quantity)||0)<=1)return rmMyOrder(rId,pId,oid);await fbPatch(draftPath(rId,pId,oid),{quantity:o.quantity-1});}
+async function rmMyOrder(rId,pId,oid){const o=findDraft(rId,pId,oid);if(!o)return;await fbDel(draftPath(rId,pId,oid));showUndo('اتشال من السلة',()=>fbWrite(draftPath(rId,pId,oid),o));}
+function editDraftNote(rId,pId,oid){const o=findDraft(rId,pId,oid);if(!o)return;pendingOrder={kind:'draftnote',rId,pId,orderId:oid};document.getElementById('order-note-item').textContent=`ملاحظة: ${o.name}${typeTxt(o.type)}`;document.getElementById('order-note-input').value=o.note||'';document.getElementById('order-note-modal').style.display='flex';setTimeout(()=>document.getElementById('order-note-input').focus(),50);}
+function orderLocked(r,p){const last=Math.max(0,...(p?.orders||[]).map(o=>o.orderedAt||0));return !!(r.lastSentAt&&last&&r.lastSentAt>last);}
+async function confirmMyOrder(rId,pId){
+  const r=state.restaurants.find(x=>x.id===rId),p=r?.people?.find(x=>x.id===pId),d=myDraft(rId,pId);if(!p)return;if(!d.length)return toast('السلة فاضية');
+  const lines=d.map(o=>`• ${o.name}${typeTxt(o.type)} × ${o.quantity}${o.note?' — '+o.note:''}`).join('\n');
+  if(!confirm(`تأكيد وإرسال طلبك؟\n\n${lines}\n\nبعد التأكيد الطلب هيوصل للأدمن.`))return;
+  const now=Date.now(),today=dnow(),patch={lastEditedBy:currentUser,lastEditedAt:tnow(),confirmedAt:now};
+  d.forEach(o=>{const ex=(p.orders||[]).find(x=>sameOrder(x,o));if(ex){patch[`orders/${ex.orderId}/quantity`]=(Number(ex.quantity)||0)+(Number(o.quantity)||0);patch[`orders/${ex.orderId}/orderedAt`]=now;patch[`orders/${ex.orderId}/orderDate`]=today;}else patch[`orders/${o.orderId}`]={...o,orderedAt:now,orderDate:today};});
+  await fbPatch(`restaurants/${rId}/people/${pId}`,patch);await fbDel(draftPath(rId,pId));
+  const summary=d.map(o=>`${o.name}${typeTxt(o.type)} ×${o.quantity}`).join('، ');
+  addLog('أكد طلبه',summary);postSystem(`✅ ${currentUser} أكد طلبه: ${summary}`);toast('طلبك اتأكد ووصل للأدمن ✓','ok');
+}
+async function reopenMyOrder(rId,pId){
+  const r=state.restaurants.find(x=>x.id===rId),p=r?.people?.find(x=>x.id===pId);if(!p?.orders?.length)return;
+  if(orderLocked(r,p))return toast('الأدمن بعت الطلب للمطعم خلاص — كلّمه في الشات 💬','err');
+  if(!confirm('هترجّع طلبك للسلة عشان تعدّله.\nهيختفي من عند الأدمن لحد ما تأكده تاني. تمام؟'))return;
+  const existing=myDraft(rId,pId),dp={};
+  p.orders.forEach(o=>{const ex=existing.find(x=>sameOrder(x,o));if(ex)dp[`${ex.orderId}/quantity`]=(Number(ex.quantity)||0)+(Number(o.quantity)||0);else dp[o.orderId]=o;});
+  await fbPatch(draftPath(rId,pId),dp);await fbWrite(`restaurants/${rId}/people/${pId}/orders`,{});
+  addLog('رجّع طلبه للتعديل');postSystem(`✏️ ${currentUser} بيعدّل طلبه`);
+}
+function draftBadge(rId,pId){const d=myDraft(rId,pId),n=d.reduce((s,o)=>s+(Number(o.quantity)||0),0);return n?`<div class="draft-badge">🛒 بيختار… ${n} صنف لسه متأكدش</div>`:'';}
+
+function renderUserItems(items,rId,pId){
+  const r=state.restaurants.find(x=>x.id===rId),p=r?.people?.find(x=>x.id===pId),mine={};
+  [...(p?.orders||[]),...myDraft(rId,pId)].forEach(o=>{mine[o.menuItemId]=(mine[o.menuItemId]||0)+(Number(o.quantity)||0);});
+  return items.map(item=>{const{avg,count}=getAvg(item.id),my=getMyRating(item.id),q=mine[item.id]||0;
+    const stars=[1,2,3,4,5].map(i=>`<button type="button" class="star ${my>=i?'lit':''}" aria-label="تقييم ${i} من 5" onclick="event.stopPropagation();rateItem(${jsAttr(item.id)},${jsAttr(item.name)},${i})">★</button>`).join('');
+    return`<div class="menu-row ${q?'in-cart':''}"><div class="menu-info"><div class="mname">${esc(item.name)}${q?`<span class="qty-pill">×${q}</span>`:''}</div><div class="mprice">${item.shamiPrice?`بلدي <b>${item.price}</b> · شامي <b>${item.shamiPrice}</b> ج`:`<b>${item.price}</b> ج`}</div><div class="stars-row">${stars}${count?`<span class="star-avg">${avg.toFixed(1)} · ${count}</span>`:''}</div></div><div class="order-btns">${item.shamiPrice?`<button class="btn-b" onclick="addMyOrder('${rId}','${pId}','${item.id}','baladi')">+ بلدي</button><button class="btn-s" onclick="addMyOrder('${rId}','${pId}','${item.id}','shami')">+ شامي</button>`:`<button class="btn-s" onclick="addMyOrder('${rId}','${pId}','${item.id}','regular')">+ أضف</button>`}</div></div>`;}).join('');
+}
+
+function renderUser(){
+  const r=getR(),body=document.getElementById('app-body');
+  if(!r){body.innerHTML='<div class="empty-state"><div class="empty-ico">🍽️</div><p>اختار مطعم من فوق</p></div>';return;}
+  const me=r.people?.find(p=>p.name===currentUser),myT=me?calcT(me,r.deliveryFee,r.menu):0,livePaid=me?parseFloat(me.amountPaid)||0:0;
+  const ledger=getPersonLedger(currentUser,r,me),savedBalance=me&&me.savedBalance!==''&&me.savedBalance!=null?parseFloat(me.savedBalance):null;
+  const cats=menuCategories(r.menu);if(menuCat&&!cats.includes(menuCat))menuCat='';
+  const items=filterMenuItems(r.menu,'',menuCat),draft=me?myDraft(r.id,me.id):[],dCnt=draft.reduce((n,o)=>n+(Number(o.quantity)||0),0),dT=draftTotal(draft,r.menu),cCnt=(me?.orders||[]).reduce((n,o)=>n+(Number(o.quantity)||0),0),locked=me?orderLocked(r,me):false;
+  const typeChip=o=>{const t=typeTxt(o.type).replace(/[()]/g,'').trim();return t?`<span class="mo-type">${t}</span>`:'';};
+  const cart=dCnt?`<div class="box cart-box" id="my-cart"><div class="box-title"><span>🛒 السلة <small class="draft-flag">لسه متأكدتش</small></span><span class="box-count">${dCnt} صنف</span></div>${draft.map(o=>{const pr=priceForOrder(o,r.menu);return`<div class="my-order-row"><div class="mo-info"><div class="mo-name">${esc(o.name)}${typeChip(o)}</div><div class="mo-sub">${pr} ج للواحد</div>${noteHtml(o)}<button class="icon-btn note-btn" onclick="editDraftNote('${r.id}','${me.id}','${o.orderId}')">📝 ${o.note?'تعديل الملاحظة':'إضافة ملاحظة'}</button></div><div class="qty-ctrl"><button onclick="decMyOrder('${r.id}','${me.id}','${o.orderId}')" aria-label="تقليل">−</button><span>${o.quantity}</span><button onclick="incMyOrder('${r.id}','${me.id}','${o.orderId}')" aria-label="زيادة">+</button></div><div class="mo-price">${(pr*o.quantity).toFixed(2)} ج</div></div>`;}).join('')}<div class="cart-total"><span>المجموع${!cCnt&&r.deliveryFee?` <small>+ ${r.deliveryFee} ج توصيل</small>`:''}</span><b>${dT.toFixed(2)} ج</b></div><button class="btn-confirm" onclick="confirmMyOrder('${r.id}','${me.id}')">✅ تأكيد الطلب وإرساله</button><div class="confirm-hint">الطلب مش هيوصل للأدمن غير لما تدوس تأكيد</div></div>`:'';
+  const confirmed=cCnt?`<div class="box confirmed-box"><div class="box-title"><span>✅ طلبك المؤكد ${locked?'<small class="sent-flag">اتبعت للمطعم</small>':''}</span>${locked?'':`<button class="btn btn-ghost btn-sm" onclick="reopenMyOrder('${r.id}','${me.id}')">✏️ تعديل</button>`}</div>${me.orders.map(o=>`<div class="conf-row"><div><span class="conf-q">${o.quantity}×</span> ${esc(o.name)}${typeChip(o)}${noteHtml(o)}</div><b>${(priceForOrder(o,r.menu)*o.quantity).toFixed(2)} ج</b></div>`).join('')}<div class="cart-total"><span>الإجمالي${r.deliveryFee?` <small>شامل ${r.deliveryFee} ج توصيل</small>`:''}</span><b>${myT.toFixed(2)} ج</b></div></div>`:'';
+  const status=dCnt?'عندك أصناف في السلة — متنساش تدوس تأكيد 👇':cCnt?(locked?'طلبك اتبعت للمطعم 🛵':'طلبك وصل للأدمن ✓'):'اختار فطارك من القائمة';
+  body.innerHTML=`<div class="user-view">
+    <div class="rest-hero"><span class="emoji">${r.emoji}</span><div class="rest-hero-txt"><h2>${esc(r.name)}</h2><p>أهلاً ${esc(currentUser)} 👋 ${status}</p></div><button class="btn btn-ghost" onclick="openRatingsModal()">⭐ التقييمات</button></div>
+    ${todayRollBanner(r)}${renderPersonalLedgerCard(ledger,myT,livePaid,savedBalance)}
+    ${cart}${confirmed}
+    ${me&&myT>0?renderPaymentCard(r,me,myT):''}
+    <div class="box"><div class="box-title"><span>🍽️ ${me?'القائمة':'<span style="color:var(--red)">اسمك مش موجود — كلم الأدمن</span>'}</span>${me?`<span class="box-count">${(r.menu||[]).length} صنف</span>`:''}</div>
+    ${me?`<div class="search-box"><input class="search-input" type="search" placeholder="ابحث في القائمة... (فول، اومليت، بطاطس)" id="usearch" data-fk="usearch" autocomplete="off" oninput="filterUserMenu('${r.id}','${me.id}')"/><div class="search-icon">${ICON_SEARCH}</div></div>
+    ${cats.length?`<div class="cat-chips">${cats.map(c=>`<button class="cat-chip ${c===menuCat?'active':''}" data-cat="${esc(c)}" onclick="setMenuCat('${r.id}',${jsAttr(c)})">${esc(c)}</button>`).join('')}</div>`:''}
+    <div id="user-menu">${renderUserItems(items,r.id,me.id)}</div>`:''}</div>
+  </div>
+  ${dCnt?`<button class="cart-bar pending no-print" onclick="document.getElementById('my-cart')?.scrollIntoView({behavior:'smooth',block:'start'})"><span class="cart-bar-count">${dCnt}</span><span>أكّد طلبك</span><b>${dT.toFixed(2)} ج</b></button>`:''}`;
+}
+
+// ================= الشات الجماعي =================
+let chatMsgs=[],chatOpen=false,chatInit=false,chatLastTs=0,audioCtx=null;
+const BASE_TITLE=document.title;
+function chatId(){return isAdmin?'__admin__':userKey(currentUser||'');}
+function chatSeenKey(){return 'fetar_chat_seen_'+chatId();}
+function chatUnread(){const seen=Number(lsGet(chatSeenKey()))||0;return chatMsgs.filter(m=>m.ts>seen&&m.uid!==chatId()).length;}
+function markChatSeen(){const last=chatMsgs[chatMsgs.length-1];if(last)lsSet(chatSeenKey(),String(last.ts));updateChatBadge();}
+function updateChatBadge(){const n=currentUser?chatUnread():0,b=document.getElementById('chat-badge');if(b){b.textContent=n>9?'9+':n;b.style.display=n?'grid':'none';}document.title=n?`(${n}) ${BASE_TITLE}`:BASE_TITLE;}
+function listenChat(){const r=fbRef(db,'chat'),q=window._query&&window._limitToLast?window._query(r,window._limitToLast(150)):r;fbOnValue(q,s=>onChatData(s.val()));}
+function onChatData(data){
+  chatMsgs=Object.entries(data||{}).map(([k,v])=>({k,...v})).filter(m=>m&&m.ts).sort((a,b)=>a.ts-b.ts);handleRollMsgs();
+  const maxTs=chatMsgs.length?chatMsgs[chatMsgs.length-1].ts:0;
+  if(!chatInit){chatInit=true;chatLastTs=maxTs;}
+  else{const fresh=chatMsgs.filter(m=>m.ts>chatLastTs&&m.uid!==chatId());chatLastTs=Math.max(chatLastTs,maxTs);if(fresh.length&&currentUser)notifyChat(fresh[fresh.length-1]);}
+  if(chatOpen){renderChatList();if(!document.hidden)markChatSeen();}
+  updateChatBadge();
+}
+function notifyChat(m){if(m.type==='roll')return;
+  const who=m.system?'':`${m.name}${m.admin?' 👑':''}: `,txt=String(m.text||'').slice(0,90);
+  if(chatOpen&&!document.hidden)return;
+  beep(m.system?660:880);
+  if(document.hidden&&'Notification' in window&&Notification.permission==='granted'){try{const n=new Notification(m.system?'🍳 حاسبة الفطار':`💬 ${m.name}`,{body:txt,tag:'fetar-chat',renotify:true});n.onclick=()=>{window.focus();openChat();n.close();};}catch(e){}}
+  if(!chatOpen)toast(`💬 ${who}${txt}`,'chat');
+  const fab=document.getElementById('chat-fab');if(fab){fab.classList.remove('ring');void fab.offsetWidth;fab.classList.add('ring');}
+}
+function beep(freq){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.value=freq;g.gain.setValueAtTime(.0001,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.18,audioCtx.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+.35);o.connect(g).connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+.4);}catch(e){}}
+document.addEventListener('pointerdown',()=>{try{if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();}catch(e){}},{once:true});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&chatOpen)markChatSeen();});
+function openChat(){chatOpen=true;document.getElementById('chat-panel').classList.add('open');document.body.classList.add('chat-open');renderChatHeader();renderChatList();markChatSeen();if(matchMedia('(min-width:700px)').matches)setTimeout(()=>document.getElementById('chat-input')?.focus(),80);}
+function closeChat(){chatOpen=false;document.getElementById('chat-panel').classList.remove('open');document.body.classList.remove('chat-open');}
+function toggleChat(){chatOpen?closeChat():openChat();}
+function renderChatHeader(){const nb=document.getElementById('chat-notif-btn');if(nb){const ok='Notification' in window;nb.style.display=ok&&Notification.permission!=='granted'?'inline-flex':'none';}const cl=document.getElementById('chat-clear-btn');if(cl)cl.style.display=isAdmin?'inline-flex':'none';const qa=document.getElementById('chat-quick');if(qa)qa.innerHTML='<button class="roll-q" onclick="startRoll()">🎲 قرعة مين ينزل</button>'+(isAdmin?['🛵 الفطار وصل!','⏰ آخر 5 دقايق للطلب','📲 الطلب اتبعت للمطعم']:['🤤 جعاااان','مين نازل؟','👍']).map(t=>`<button onclick="sendChat(${jsAttr(t)},${isAdmin})">${esc(t)}</button>`).join('');}
+function chatTime(ts){const d=new Date(ts),t=d.toLocaleTimeString('ar-EG',{hour:'numeric',minute:'2-digit'});return d.toDateString()===new Date().toDateString()?t:`${d.toLocaleDateString('ar-EG',{day:'numeric',month:'short'})} ${t}`;}
+function renderChatList(){
+  const el=document.getElementById('chat-list');if(!el)return;const atBottom=el.scrollHeight-el.scrollTop-el.clientHeight<80;let prev=null,prevDay='';
+  el.innerHTML=chatMsgs.length?chatMsgs.map(m=>{const day=new Date(m.ts).toDateString(),dayRow=day!==prevDay?`<div class="chat-day">${day===new Date().toDateString()?'النهارده':new Date(m.ts).toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'short'})}</div>`:'';prevDay=day;
+    if(m.type==='roll'){prev=null;return dayRow+renderRollCard(m);}if(m.system){prev=null;return`${dayRow}<div class="chat-sys ${m.alert?'alert':''}">${esc(m.text)}<span>${chatTime(m.ts)}</span></div>`;}
+    const mine=m.uid===chatId(),cont=prev&&prev.uid===m.uid&&m.ts-prev.ts<180000&&!dayRow;prev=m;
+    return`${dayRow}<div class="chat-msg ${mine?'mine':''} ${cont?'cont':''}">${!mine&&!cont?`<div class="chat-av">${esc(ini(m.name))}</div>`:'<div class="chat-av ghost"></div>'}<div class="chat-bubble">${!mine&&!cont?`<div class="chat-name">${esc(m.name)}${m.admin?' 👑':''}</div>`:''}${m.type==='file'?renderFileMsg(m):`<div class="chat-text">${esc(m.text)}</div>`}<div class="chat-time">${chatTime(m.ts)}</div></div></div>`;}).join(''):`<div class="chat-empty"><div>💬</div>لسه مفيش رسايل<br><small>ابدأ الكلام مع الشلة</small></div>`;
+  if(atBottom||!el.dataset.init){el.scrollTop=el.scrollHeight;el.dataset.init='1';}
+}
+async function sendChat(preset,asAlert){if(preset==null&&pendingFile){const inp0=document.getElementById('chat-input'),cap=inp0.value.trim().slice(0,500);inp0.value='';inp0.style.height='';if(!(await sendPendingFile(cap)))inp0.value=cap;const el0=document.getElementById('chat-list');if(el0)el0.scrollTop=el0.scrollHeight;return;}
+  const inp=document.getElementById('chat-input'),text=String(preset??inp.value).trim().slice(0,500);if(!text||!currentUser)return;
+  if(preset==null){inp.value='';inp.style.height='';}
+  try{if(asAlert)await fbPush(fbRef(db,'chat'),{system:true,alert:true,uid:chatId(),name:currentUser,text:`${text} — ${currentUser}`,ts:Date.now()});else await fbPush(fbRef(db,'chat'),{uid:chatId(),name:currentUser,admin:isAdmin,text,ts:Date.now()});}catch(e){toast('تعذر إرسال الرسالة ❌');if(preset==null)inp.value=text;}
+  const el=document.getElementById('chat-list');if(el)el.scrollTop=el.scrollHeight;
+}
+function postSystem(text){if(!currentUser)return;fbPush(fbRef(db,'chat'),{system:true,uid:chatId(),name:currentUser,text,ts:Date.now()}).catch(()=>{});}
+function chatKey(e){if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();sendChat();}}
+function chatAutoGrow(t){t.style.height='';t.style.height=Math.min(t.scrollHeight,110)+'px';}
+async function enableChatNotifs(){if(!('Notification' in window))return toast('المتصفح ده مش بيدعم الإشعارات');const p=await Notification.requestPermission();toast(p==='granted'?'الإشعارات اتفعّلت 🔔':'الإشعارات مقفولة من إعدادات المتصفح',p==='granted'?'ok':'err');renderChatHeader();}
+async function clearChat(){if(!isAdmin||!confirm('مسح كل رسايل الشات لكل الناس؟'))return;await fbDel('chat');await fbDel('chatFiles');fileCache={};addLog('مسح الشات');}
+// ===== حذف صفوف من كشف الحساب (مع تراجع) =====
+function sheetTotalWithout(s,removed){return Object.entries(s.people||{}).filter(([k])=>!removed.includes(k)).reduce((n,[,p])=>n+Number(p.total||0),0);}
+async function deleteSheetPerson(sid,pid){
+  const s=state.orderSheets?.[sid],p=s?.people?.[pid];if(!p)return;
+  if(!confirm(`حذف الصف ده من كشف ${p.name}؟\n\n${s.restaurantName||''} · ${s.orderDate||''}\nالمبلغ: ${Number(p.total||0).toFixed(2)} ج`))return;
+  const backup=JSON.parse(JSON.stringify(s)),left=Object.keys(s.people||{}).filter(k=>k!==pid);
+  if(!left.length)await fbDel(`orderSheets/${sid}`);else await fbPatch(`orderSheets/${sid}`,{[`people/${pid}`]:null,total:sheetTotalWithout(s,[pid])});
+  addLog('حذف صف من كشف الحساب',p.name);showUndo('تم حذف الصف',()=>fbWrite(`orderSheets/${sid}`,backup));
+}
+async function deletePersonLedger(name){
+  const a=buildLedgerAccounts().find(x=>x.name===name);if(!a||!a.sheets.length)return;
+  if(!confirm(`مسح كشف ${name} كله؟ (${a.sheets.length} شيت · ${a.total.toFixed(2)} ج)\nده هيشيله من كل الشيتات في الفترة المعروضة.`))return;
+  const patch={},backup={};
+  a.sheets.forEach(({sheet:s,person:p})=>{backup[s.id]=JSON.parse(JSON.stringify(s));const left=Object.keys(s.people||{}).filter(k=>k!==p.id);if(!left.length)patch[s.id]=null;else{patch[`${s.id}/people/${p.id}`]=null;patch[`${s.id}/total`]=sheetTotalWithout(s,[p.id]);}});
+  await fbPatch('orderSheets',patch);window.ledgerOpen='';
+  addLog('مسح كشف حساب كامل',name);showUndo(`تم مسح كشف ${name}`,()=>fbPatch('orderSheets',backup));
+}// ================= قرعة مين ينزل يجيب الفطار =================
+// المرشحين = اللي أكدوا طلبهم في المطعم الحالي. القرعة بتتعمل مرة واحدة على جهاز اللي بدأها
+// وبتتحفظ في rolls/ + رسالة في الشات، فالكل بيشوف نفس النتيجة.
+let rollAnim={},rollSeen=new Set();
+function rollList(){return Object.values(state.rolls||{}).filter(x=>x&&x.ts).sort((a,b)=>b.ts-a.ts);}
+function todayRoll(rId){const d=dnow();return rollList().find(x=>x.restId===rId&&x.date===d&&!x.voided);}
+function rollWinCounts(beforeTs){const since=(beforeTs||Date.now())-30*864e5,c={};rollList().filter(x=>!x.voided&&x.ts>=since&&(!beforeTs||x.ts<beforeTs)).forEach(x=>{c[x.winner]=(c[x.winner]||0)+1;});return c;}
+function lastWinner(){const d=dnow();return rollList().find(x=>!x.voided&&x.date!==d)?.winner||'';}
+function rollCandidates(r){return(r?.people||[]).filter(p=>(p.orders||[]).length).map(p=>p.name);}
+function fairPick(names,wins){const w=names.map(n=>1/(1+(wins[n]||0))),sum=w.reduce((a,b)=>a+b,0);const rnd=crypto.getRandomValues(new Uint32Array(1))[0]/4294967296*sum;let acc=0;for(let i=0;i<names.length;i++){acc+=w[i];if(rnd<acc)return names[i];}return names[names.length-1];}
+async function voidRoll(rollId){if(!rollId)return;await fbPatch(`rolls/${rollId}`,{voided:true,voidedBy:currentUser,voidedAt:Date.now()});const m=chatMsgs.find(x=>x.rollId===rollId);if(m)await fbPatch(`chat/${m.k}`,{voided:true});}
+async function startRoll(excludeName,replacesId){
+  const r=getR();if(!r||!currentUser)return;
+  const all=rollCandidates(r);let cands=excludeName?all.filter(n=>n!==excludeName):all;
+  if(!cands.length)return toast(all.length?'مفيش حد تاني أكد طلبه':'مفيش حد أكد طلبه لسه — القرعة بتبقى بين اللي أكدوا');
+  if(!excludeName&&cands.length<2)return toast('محتاجين 2 على الأقل يكونوا أكدوا طلبهم');
+  const done=todayRoll(r.id);
+  if(done&&!replacesId){
+    if(!isAdmin){openChat();return toast(`القرعة اتعملت النهارده خلاص — ${done.winner} هو اللي نازل 🏃`);}
+    if(!confirm(`فيه قرعة النهارده طلع فيها ${done.winner}.\nتلغيها وتعمل واحدة جديدة؟`))return;
+    replacesId=done.id;
+  }
+  const wins=rollWinCounts(),last=lastWinner();
+  const pool=!excludeName&&last&&cands.length>2&&cands.includes(last)?cands.filter(n=>n!==last):cands;
+  const winner=fairPick(pool,wins),id=uuid(),now=Date.now();
+  const rec={id,restId:r.id,restName:r.name,date:dnow(),ts:now,winner,candidates:cands,by:currentUser,rested:pool.length<cands.length?last:'',replaced:excludeName||''};
+  if(replacesId)await voidRoll(replacesId);
+  await fbWrite(`rolls/${id}`,rec);
+  await fbPush(fbRef(db,'chat'),{type:'roll',rollId:id,uid:chatId(),name:currentUser,text:`🎲 القرعة: ${winner} هينزل يجيب الفطار`,...rec,ts:now});
+  addLog('عمل قرعة الفطار',`${winner} (${r.name})`);
+}
+function reRoll(k){const m=chatMsgs.find(x=>x.k===k);if(!m||!isAdmin)return;if(!confirm(`إعادة القرعة من غير ${m.winner}؟ (مثلاً لو مش موجود)`))return;startRoll(m.winner,m.rollId);}
+function isLatestRoll(m){const d=dnow();const latest=[...chatMsgs].reverse().find(x=>x.type==='roll'&&!x.voided&&x.restId===m.restId);return latest&&latest.k===m.k&&m.date===d;}
+function handleRollMsgs(){chatMsgs.filter(m=>m.type==='roll').forEach(m=>{if(rollSeen.has(m.k))return;rollSeen.add(m.k);if(chatInit&&currentUser&&!m.voided&&Date.now()-m.ts<20000)animateRoll(m);});}
+function animateRoll(m){
+  const names=(m.candidates&&m.candidates.length)?m.candidates:[m.winner];const st=rollAnim[m.k]={cur:names[0]};let i=0,delay=55;setTimeout(()=>renderAll(),0);
+  if(document.getElementById('app')?.style.display==='block'&&!chatOpen)openChat();
+  const set=v=>{st.cur=v;const el=document.querySelector(`[data-roll="${m.k}"]`);if(el)el.textContent=v;};
+  const tick=()=>{i++;set(names[(i+Math.floor(Math.random()*names.length))%names.length]);delay*=1.13;if(delay<430)setTimeout(tick,delay);else{set(m.winner);setTimeout(()=>{delete rollAnim[m.k];renderChatList();revealRoll(m);},450);}};
+  setTimeout(tick,delay);
+}
+function revealRoll(m){
+  beep(1046);setTimeout(()=>beep(1318),160);
+  const card=document.querySelector(`[data-roll-card="${m.k}"]`);if(card){card.classList.add('just-won');setTimeout(()=>card.classList.remove('just-won'),2200);}
+  const mine=m.winner===currentUser;
+  toast(mine?'🏃 انت اللي هتنزل تجيب الفطار النهارده!':`🎲 ${m.winner} هو اللي هينزل يجيب الفطار`,mine?'ok':'chat');
+  if(mine&&document.hidden&&'Notification' in window&&Notification.permission==='granted'){try{new Notification('🎲 قرعة الفطار',{body:'انت اللي هتنزل تجيب الفطار النهارده 🏃',tag:'fetar-roll'});}catch(e){}}
+  renderAll();
+}
+function renderRollCard(m){
+  const anim=rollAnim[m.k],wins=rollWinCounts(m.ts),cands=m.candidates||[];
+  return`<div class="roll-card ${m.voided?'voided':''}" data-roll-card="${m.k}"><div class="roll-head"><b>🎲 قرعة مين ينزل يجيب الفطار</b><span>${esc(m.restName||'')} · ${chatTime(m.ts)}</span></div>
+  <div class="roll-cands">${cands.map(n=>`<span class="${!anim&&n===m.winner?'win':''} ${n===m.rested?'rested':''}" title="نزل ${wins[n]||0} مرة آخر 30 يوم">${esc(n)}<i>${wins[n]||0}</i></span>`).join('')}</div>
+  ${anim?`<div class="roll-spin" data-roll="${m.k}">${esc(anim.cur)}</div>`:`<div class="roll-winner">🏃 <b>${esc(m.winner)}</b> هو اللي هينزل${m.voided?'<small> — القرعة دي اتلغت</small>':''}</div>`}
+  <div class="roll-foot">بدأها ${esc(m.by||m.name)}${m.rested?` · ${esc(m.rested)} نزل آخر مرة فاستريّح`:''}${m.replaced?` · إعادة من غير ${esc(m.replaced)}`:''}<br><small>الرقم جنب الاسم = مرات النزول آخر 30 يوم، واللي نزل أقل فرصته أكبر</small></div>
+  ${!anim&&!m.voided&&isAdmin&&isLatestRoll(m)?`<button class="roll-reroll" onclick="reRoll('${m.k}')">🔁 إعادة القرعة من غير ${esc(m.winner)}</button>`:''}</div>`;
+}
+function todayRollBanner(r){
+  const t=todayRoll(r.id);
+  if(t&&chatMsgs.some(m=>m.rollId===t.id&&rollAnim[m.k]))return`<div class="roll-banner idle"><span>🎲 القرعة شغالة دلوقتي...</span><button onclick="openChat()">💬 اتفرج</button></div>`;
+  if(t)return`<div class="roll-banner"><span>🏃 النهارده <b>${esc(t.winner)}</b> ${t.winner===currentUser?'— <b>يعني انت!</b>':''} هو اللي نازل يجيب الفطار</span><button onclick="openChat()">💬 الشات</button></div>`;
+  return rollCandidates(r).length>=2?`<div class="roll-banner idle"><span>🎲 لسه محدش اتعمله قرعة مين ينزل النهارده</span><button onclick="startRoll()">اعمل القرعة</button></div>`:'';
+}
+// ================= رفع ملفات وصور في الشات =================
+// الملفات بتتخزن في Realtime Database (chatFiles/{id}) عشان مش محتاجين Firebase Storage (اللي بقى محتاج خطة مدفوعة).
+// الرسالة نفسها فيها صورة مصغرة بس، والملف الكامل بيتحمّل لما حد يدوس عليه.
+const FILE_MAX=2*1024*1024,IMG_TYPES=['image/jpeg','image/png','image/webp','image/gif','image/heic','image/heif'];
+let pendingFile=null,fileCache={};
+function fmtSize(b){return b<1024?b+' B':b<1048576?(b/1024).toFixed(0)+' KB':(b/1048576).toFixed(1)+' MB';}
+function fileIcon(n,t){const e=String(n).split('.').pop().toLowerCase();return t?.startsWith('image/')?'🖼️':e==='pdf'?'📕':['xls','xlsx','csv'].includes(e)?'📗':['doc','docx'].includes(e)?'📘':['ppt','pptx'].includes(e)?'📙':['zip','rar','7z'].includes(e)?'🗜️':['mp3','wav','m4a','ogg'].includes(e)?'🎵':['mp4','mov','webm'].includes(e)?'🎬':'📄';}
+function readAsDataURL(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error);r.readAsDataURL(f);});}
+function loadImg(src){return new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src;});}
+function drawScaled(img,max,q){const s=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight)),c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*s);c.height=Math.round(img.naturalHeight*s);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);return{data:c.toDataURL('image/jpeg',q),w:c.width,h:c.height};}
+async function prepareFile(f){
+  if(!f)return;const isImg=IMG_TYPES.includes(f.type);
+  if(!isImg&&f.size>FILE_MAX)return toast(`الملف كبير (${fmtSize(f.size)}) — الحد الأقصى 2 ميجا`,'err');
+  setAttachStatus('⏳ بيتجهّز...');
+  try{
+    if(isImg){
+      const src=await readAsDataURL(f),img=await loadImg(src);
+      let full;if(f.type==='image/gif'&&f.size<=1.5*1048576)full={data:src,w:img.naturalWidth,h:img.naturalHeight};else{full=drawScaled(img,1600,.82);if(full.data.length>1.3e6)full=drawScaled(img,1200,.7);}
+      const thumb=drawScaled(img,360,.6);
+      pendingFile={kind:'image',name:f.name||'صورة.jpg',type:f.type==='image/gif'&&full.data===src?'image/gif':'image/jpeg',size:Math.round(full.data.length*.75),data:full.data,thumb:thumb.data,w:full.w,h:full.h};
+    }else pendingFile={kind:'file',name:f.name||'ملف',type:f.type||'application/octet-stream',size:f.size,data:await readAsDataURL(f)};
+    renderAttachPreview();document.getElementById('chat-input')?.focus();
+  }catch(e){console.error(e);toast('تعذر قراءة الملف ❌');setAttachStatus('');}
+}
+function setAttachStatus(t){const el=document.getElementById('chat-attach');if(!el)return;el.style.display=t?'flex':'none';el.innerHTML=t?`<span class="att-status">${t}</span>`:'';}
+function renderAttachPreview(){const el=document.getElementById('chat-attach');if(!el)return;if(!pendingFile){el.style.display='none';el.innerHTML='';return;}const f=pendingFile;el.style.display='flex';el.innerHTML=`${f.kind==='image'?`<img src="${f.thumb}" alt="">`:`<span class="att-ico">${fileIcon(f.name,f.type)}</span>`}<div class="att-info"><b>${esc(f.name)}</b><span>${fmtSize(f.size)} · اكتب تعليق لو عايز ودوس إرسال</span></div><button class="chat-hbtn" onclick="cancelAttach()" aria-label="إلغاء">✕</button>`;}
+function cancelAttach(){pendingFile=null;renderAttachPreview();const i=document.getElementById('chat-file');if(i)i.value='';}
+function onChatFilePick(inp){prepareFile(inp.files?.[0]);inp.value='';}
+async function sendPendingFile(caption){
+  const f=pendingFile;if(!f||!currentUser)return false;pendingFile=null;setAttachStatus('⬆️ بيترفع...');
+  try{
+    const id=uuid(),now=Date.now();
+    await fbWrite(`chatFiles/${id}`,{name:f.name,type:f.type,size:f.size,data:f.data,uid:chatId(),ts:now});
+    const label=f.kind==='image'?'📷 صورة':`📎 ${f.name}`;
+    await fbPush(fbRef(db,'chat'),{type:'file',fileId:id,kind:f.kind,fileName:f.name,fileType:f.type,size:f.size,thumb:f.thumb||'',w:f.w||0,h:f.h||0,caption:caption||'',text:caption?`${label} — ${caption}`:label,uid:chatId(),name:currentUser,admin:isAdmin,ts:now});
+    fileCache[id]={name:f.name,type:f.type,data:f.data};setAttachStatus('');return true;
+  }catch(e){console.error(e);pendingFile=f;renderAttachPreview();toast('تعذر رفع الملف ❌ — ممكن يكون كبير');return false;}
+}
+async function getChatFile(id){if(fileCache[id])return fileCache[id];const v=await fbRead(`chatFiles/${id}`);if(v)fileCache[id]=v;return v;}
+function renderFileMsg(m){
+  const cap=m.caption?`<div class="chat-text">${esc(m.caption)}</div>`:'';
+  if(m.kind==='image'&&m.thumb){const ratio=m.w&&m.h?Math.min(1.4,Math.max(.5,m.h/m.w)):.75;return`<button class="chat-img" style="aspect-ratio:${(1/ratio).toFixed(3)}" onclick="openChatImage('${m.fileId}')"><img src="${m.thumb}" alt="${esc(m.fileName)}" loading="lazy"></button>${cap}`;}
+  return`<button class="chat-file" onclick="downloadChatFile('${m.fileId}')"><span class="cf-ico">${fileIcon(m.fileName,m.fileType)}</span><span class="cf-info"><b>${esc(m.fileName)}</b><small>${fmtSize(m.size||0)} · دوس للتحميل</small></span><span class="cf-dl">⬇</span></button>${cap}`;
+}
+function dataUrlToBlob(u){const[h,b]=u.split(','),mime=(h.match(/data:([^;]+)/)||[])[1]||'application/octet-stream',bin=atob(b),a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:mime});}
+async function downloadChatFile(id){toast('⬇️ بيتحمّل...');try{const f=await getChatFile(id);if(!f)return toast('الملف ده اتمسح','err');const url=URL.createObjectURL(dataUrlToBlob(f.data)),a=document.createElement('a');a.href=url;a.download=f.name||'file';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);}catch(e){toast('تعذر تحميل الملف ❌');}}
+async function openChatImage(id){const v=document.getElementById('img-viewer');v.style.display='flex';v.querySelector('img').removeAttribute('src');v.querySelector('.iv-status').textContent='⏳ بتحمّل الصورة...';try{const f=await getChatFile(id);if(!f)throw 0;v.querySelector('img').src=f.data;v.querySelector('.iv-status').textContent='';v.dataset.id=id;}catch(e){v.querySelector('.iv-status').textContent='الصورة دي اتمسحت';}}
+function closeImageViewer(){document.getElementById('img-viewer').style.display='none';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('img-viewer')?.style.display==='flex')closeImageViewer();});
+// لصق صورة (Ctrl+V) أو سحب ملف على الشات
+document.addEventListener('paste',e=>{if(!chatOpen)return;const it=[...(e.clipboardData?.items||[])].find(i=>i.kind==='file');if(it){e.preventDefault();prepareFile(it.getAsFile());}});
+document.addEventListener('dragover',e=>{if(chatOpen&&e.target.closest?.('#chat-panel')){e.preventDefault();document.getElementById('chat-panel').classList.add('drop');}});
+document.addEventListener('dragleave',e=>{if(e.target.id==='chat-panel'||!e.relatedTarget)document.getElementById('chat-panel')?.classList.remove('drop');});
+document.addEventListener('drop',e=>{const p=document.getElementById('chat-panel');p?.classList.remove('drop');if(chatOpen&&e.target.closest?.('#chat-panel')&&e.dataTransfer?.files?.length){e.preventDefault();prepareFile(e.dataTransfer.files[0]);}});
+// تشغيل التطبيق بعد تحميل كل الكود
+buildLogin();
+</script>
+</body>
+</html>
+
